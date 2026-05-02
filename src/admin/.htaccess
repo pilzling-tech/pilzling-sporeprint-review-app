@@ -1,9 +1,20 @@
 # Admin DocRoot — admin-sporeprint.pilzling.eu
 #
-# WICHTIG: Diese Subdomain ist zusaetzlich durch cPanel-Verzeichnisschutz
-# abgesichert (HTTP Basic Auth). Die zugehoerige .htpasswd-Datei wird
-# von cPanel verwaltet und liegt aussserhalb des DocRoots — das hier ist
-# das App-eigene Hardening, nicht die Pre-Auth-Schicht.
+# WICHTIG: Diese Datei enthaelt ZWEI Bloecke:
+#   1) App-eigenes Hardening (von uns gepflegt, im Repo versioniert)
+#   2) cPanel-verwalteter Verzeichnisschutz (Auth-Direktiven, NICHT manuell editieren!)
+#
+# Warum beide hier in einer Datei?
+# WinSCP-Auto-Deploy synct lokale src/admin/.htaccess → Server. Wenn der cPanel-Block
+# in der lokalen Datei fehlt, ueberschreibt WinSCP die Server-Version und der
+# Verzeichnisschutz geht verloren. Daher: kompletten Block (inkl. cp:ppd-Marker)
+# im Repo halten.
+#
+# Wenn der Verzeichnisschutz-User oder das Passwort in cPanel geaendert wird,
+# muss der cp:ppd-Block hier in src/admin/.htaccess manuell nachgezogen werden
+# (User-Aenderung selten — pragmatisch ok).
+
+# === App-eigenes Hardening ===
 
 # .env-Dateien blockieren
 <Files .env>
@@ -24,3 +35,15 @@ Options -Indexes
 
 # UTF-8 als Default
 AddDefaultCharset UTF-8
+
+#----------------------------------------------------------------cp:ppd
+# Section managed by cPanel: Password Protected Directories     -cp:ppd
+# - Do not edit this section of the htaccess file!              -cp:ppd
+#----------------------------------------------------------------cp:ppd
+AuthType Basic
+AuthName "Protected 'app.reviews/admin'"
+AuthUserFile "/home/pilzling/.htpasswds/app.reviews/admin/passwd"
+Require valid-user
+#----------------------------------------------------------------cp:ppd
+# End section managed by cPanel: Password Protected Directories -cp:ppd
+#----------------------------------------------------------------cp:ppd

@@ -59,6 +59,7 @@ Saubere Trennung: alles **server-intern** = "reviews", alles **extern sichtbar**
 
 - pilzling.shop blockt WebFetch (WAF) — für Frontend-Checks Claude in Chrome nutzen, nicht WebFetch
 - onlinereviews.tech ist die Altsystem-Referenz — Material liegt unter `references/Orginal Structure/`. Beim Designen des eigenen Systems nicht 1:1 kopieren, sondern bewusst Verbesserungen einbauen
+- **cPanel-Verzeichnisschutz + WinSCP-Auto-Deploy = Konflikt.** cPanel verwaltet Auth-Direktiven in der `.htaccess` des geschützten Ordners (mit `#----cp:ppd`-Markern). Wenn die lokale `src/admin/.htaccess` diese Direktiven nicht enthält, überschreibt WinSCP die Server-Version und der Schutz geht verloren — sehr wahrscheinlich auch der historische Grund warum production-app's Schutz immer wieder "weg" war. **Lösung:** den kompletten cp:ppd-Block (inkl. Marker) in `src/admin/.htaccess` mitführen. Bei User-/Passwort-Änderung in cPanel muss der Block manuell nachgezogen werden (Frequenz niedrig, pragmatisch ok). `.htpasswd` selbst liegt unter `/home/pilzling/.htpasswds/<domain>/passwd` — außerhalb DocRoot, vom Sync nicht betroffen.
 
 ## Externer Kontext
 
