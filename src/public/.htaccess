@@ -1,0 +1,22 @@
+# Public DocRoot — sporeprint.pilzling.eu
+# Hardening uebernommen aus production-app, an Sporeprint angepasst.
+
+# .env-Dateien blockieren
+<Files .env>
+    Order allow,deny
+    Deny from all
+</Files>
+<Files .env.example>
+    Order allow,deny
+    Deny from all
+</Files>
+<FilesMatch "^\.env\..*$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Verzeichnislisting deaktivieren
+Options -Indexes
+
+# UTF-8 als Default
+AddDefaultCharset UTF-8

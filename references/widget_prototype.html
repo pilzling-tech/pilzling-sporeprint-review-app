@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pilzling – Bewertungen Widget</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS-Variablen – hier zentral anpassen ── */
+    :root {
+      --bg:            #1a1f2e;
+      --card-bg:       #ffffff;
+      --card-radius:   12px;
+      --text-dark:     #1a1a1a;
+      --text-muted:    rgba(0, 0, 0, 0.45);
+      --text-light:    #ffffff;
+      --text-light-60: rgba(255, 255, 255, 0.6);
+      --star-color:    #f4c430;
+      --tp-color:      #00b67a;
+      --btn-bg:        rgba(255, 255, 255, 0.14);
+      --btn-hover:     rgba(255, 255, 255, 0.24);
+      --font:          'Rubik', sans-serif;
+      --gap:           16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+    }
+
+    /* ── Widget-Wrapper ── */
+    .reviews-widget {
+      background: var(--bg);
+      padding: 48px 24px 36px;
+      color: var(--text-light);
+      font-family: var(--font);
+    }
+
+    /* ── Plattform-Bewertungen Header ── */
+    .ratings-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 36px;
+      margin-bottom: 14px;
+    }
+
+    .platform-rating {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .platform-logo {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .rating-score {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-light);
+    }
+
+    .rating-star-google { color: var(--star-color); font-size: 22px; }
+    .rating-star-tp     { color: var(--tp-color);   font-size: 22px; }
+
+    /* ── Gesamtzahl ── */
+    .total-count {
+      text-align: center;
+      font-size: 15px;
+      color: var(--text-light);
+      margin-bottom: 32px;
+    }
+
+    .total-count strong { font-weight: 600; }
+
+    /* ── Karussell ── */
+    .carousel-container {
+      display: flex;
+      align-items: center;
+      gap: var(--gap);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .carousel-track-wrapper {
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: var(--gap);
+      transition: transform 0.35s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* ── Bewertungskarte ── */
+    .review-card {
+      background: var(--card-bg);
+      border-radius: var(--card-radius);
+      padding: 20px;
+      min-width: calc(33.333% - 11px);
+      flex-shrink: 0;
+      color: var(--text-dark);
+      position: relative;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-right: 28px; /* Platz für Plattform-Icon */
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .user-info { flex: 1; }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 15px;
+      line-height: 1.4;
+      color: var(--text-dark);
+    }
+
+    .review-date {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    .platform-icon {
+      position: absolute;
+      top: 18px;
+      right: 16px;
+      width: 22px;
+      height: 22px;
+    }
+
+    /* ── Sterne ── */
+    .stars {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 10px;
+    }
+
+    .star { color: var(--star-color); font-size: 16px; line-height: 1; }
+
+    /* ── Bewertungstext ── */
+    .review-text {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--text-dark);
+    }
+
+    /* ── Nav-Buttons ── */
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-light);
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .nav-btn:hover { background: rgba(255, 255, 255, 0.18); }
+
+    /* ── CTA ── */
+    .cta-container {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--btn-bg);
+      border: none;
+      border-radius: 50px;
+      padding: 14px 36px;
+      color: var(--text-light);
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .cta-btn:hover { background: var(--btn-hover); }
+
+    /* ── Footer ── */
+    .widget-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-light-60);
+    }
+
+    .footer-logo {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--text-light);
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      .review-card { min-width: 100%; }
+      .ratings-header { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<section class="reviews-widget">
+
+  <!-- Plattform-Ratings Header -->
+  <div class="ratings-header">
+
+    <!-- Google -->
+    <div class="platform-rating">
+      <svg class="platform-logo" viewBox="0 0 48 48" aria-label="Google">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      <span class="rating-score">4.8</span>
+      <span class="rating-star-google">★</span>
+    </div>
+
+    <!-- Trustpilot -->
+    <div class="platform-rating">
+      <svg class="platform-logo" viewBox="0 0 24 24" aria-label="Trustpilot">
+        <path fill="#00b67a" d="M12 0L14.59 8.41H23.51L16.46 13.59L19.05 22L12 16.82L4.95 22L7.54 13.59L0.49 8.41H9.41L12 0Z"/>
+      </svg>
+      <span class="rating-score">4.5</span>
+      <span class="rating-star-tp">★</span>
+    </div>
+
+  </div>
+
+  <!-- Gesamtanzahl -->
+  <div class="total-count"><strong>63</strong> Bewertungen</div>
+
+  <!-- Karussell -->
+  <div class="carousel-container">
+
+    <button class="nav-btn" id="btn-prev" aria-label="Zurück">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </button>
+
+    <div class="carousel-track-wrapper">
+      <div class="carousel-track" id="carousel-track">
+
+        <!-- Karte 1: Katerina Fillmore — Google -->
+        <div class="review-card">
+          <svg class="platform-icon" viewBox="0 0 48 48" aria-label="Google">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          <div class="card-header">
+            <img class="avatar"
+              src="https://d2ac3gh6wzqv30.cloudfront.net/default/widgets/user/profile/no_image.png"
+              alt="Katerina Fillmore">
+            <div class="user-info">
+              <div class="user-name">Katerina Fillmore</div>
+              <div class="review-date">17. Dezember 2025</div>
+            </div>
+          </div>
+          <div class="stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <div class="review-text">Tolle Pilze! Komme gerne wieder;)</div>
+        </div>
+
+        <!-- Karte 2: Steffi — Trustpilot -->
+        <div class="review-card">
+          <svg class="platform-icon" viewBox="0 0 24 24" aria-label="Trustpilot">
+            <path fill="#00b67a" d="M12 0L14.59 8.41H23.51L16.46 13.59L19.05 22L12 16.82L4.95 22L7.54 13.59L0.49 8.41H9.41L12 0Z"/>
+          </svg>
+          <div class="card-header">
+            <img class="avatar"
+              src="https://d2ac3gh6wzqv30.cloudfront.net/default/widgets/user/profile/no_image.png"
+              alt="Steffi">
+            <div class="user-info">
+              <div class="user-name">Steffi</div>
+              <div class="review-date">8. Dezember 2025</div>
+            </div>
+          </div>
+          <div class="stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <div class="review-text">Tolles Produkt, hübsch verpackt und bei Fragen/Problemen gibt es schnell eine Rückmeldung.</div>
+        </div>
+
+        <!-- Karte 3: igab — Trustpilot -->
+        <div class="review-card">
+          <svg class="platform-icon" viewBox="0 0 24 24" aria-label="Trustpilot">
+            <path fill="#00b67a" d="M12 0L14.59 8.41H23.51L16.46 13.59L19.05 22L12 16.82L4.95 22L7.54 13.59L0.49 8.41H9.41L12 0Z"/>
+          </svg>
+          <div class="card-header">
+            <img class="avatar"
+              src="https://d2ac3gh6wzqv30.cloudfront.net/default/widgets/user/profile/no_image.png"
+              alt="igab">
+            <div class="user-info">
+              <div class="user-name">igab</div>
+              <div class="review-date">4. November 2025</div>
+            </div>
+          </div>
+          <div class="stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <div class="review-text">Tolles Produkt :-) Ich habe diesmal eine andere Pilzsorte besorgt. Letztes Jahr hatte ich schon die Austernpilze. Die sind sehr gut gewachsen…</div>
+        </div>
+
+        <!-- Karte 4: Platzhalter — weitere Bewertungen hier ergänzen -->
+        <div class="review-card">
+          <svg class="platform-icon" viewBox="0 0 48 48" aria-label="Google">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          <div class="card-header">
+            <img class="avatar"
+              src="https://d2ac3gh6wzqv30.cloudfront.net/default/widgets/user/profile/no_image.png"
+              alt="Weitere Bewertung">
+            <div class="user-info">
+              <div class="user-name">Weitere Bewertung</div>
+              <div class="review-date">Oktober 2025</div>
+            </div>
+          </div>
+          <div class="stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+          <div class="review-text">Hier kommt der Text der nächsten Bewertung.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="nav-btn" id="btn-next" aria-label="Weiter">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+    </button>
+
+  </div>
+
+  <!-- CTA-Button -->
+  <div class="cta-container">
+    <a href="https://feedback.sternfaenger.eu/pilzling" target="_blank" rel="noopener" class="cta-btn">
+      Hinterlassen Sie eine Bewertung
+    </a>
+  </div>
+
+  <!-- Footer -->
+  <div class="widget-footer">
+    Bereitgestellt von
+    <span class="footer-logo">STERNFÄNGER</span>
+  </div>
+
+</section>
+
+<script>
+  const track   = document.getElementById('carousel-track');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+
+  let current = 0;
+
+  function visibleCards() {
+    return window.innerWidth <= 720 ? 1 : 3;
+  }
+
+  function cardWidth() {
+    const gap     = 16;
+    const wrapper = track.parentElement;
+    const n       = visibleCards();
+    return (wrapper.offsetWidth - gap * (n - 1)) / n + gap;
+  }
+
+  function update() {
+    const cards   = track.querySelectorAll('.review-card');
+    const maxIdx  = Math.max(0, cards.length - visibleCards());
+    current       = Math.max(0, Math.min(current, maxIdx));
+    track.style.transform = `translateX(-${current * cardWidth()}px)`;
+    btnPrev.style.opacity = current === 0      ? '0.3' : '1';
+    btnNext.style.opacity = current === maxIdx ? '0.3' : '1';
+  }
+
+  btnPrev.addEventListener('click', () => { current--; update(); });
+  btnNext.addEventListener('click', () => { current++; update(); });
+  window.addEventListener('resize', update);
+  update();
+</script>
+
+</body>
+</html>

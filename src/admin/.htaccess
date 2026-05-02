@@ -1,0 +1,26 @@
+# Admin DocRoot — admin-sporeprint.pilzling.eu
+#
+# WICHTIG: Diese Subdomain ist zusaetzlich durch cPanel-Verzeichnisschutz
+# abgesichert (HTTP Basic Auth). Die zugehoerige .htpasswd-Datei wird
+# von cPanel verwaltet und liegt aussserhalb des DocRoots — das hier ist
+# das App-eigene Hardening, nicht die Pre-Auth-Schicht.
+
+# .env-Dateien blockieren
+<Files .env>
+    Order allow,deny
+    Deny from all
+</Files>
+<Files .env.example>
+    Order allow,deny
+    Deny from all
+</Files>
+<FilesMatch "^\.env\..*$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Verzeichnislisting deaktivieren
+Options -Indexes
+
+# UTF-8 als Default
+AddDefaultCharset UTF-8

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pilzling – Bewertungen Widget</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- SVG-Symbole einmalig definieren -->
+  <svg hidden aria-hidden="true">
+    <defs>
+      <symbol id="icon-google" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </symbol>
+      <symbol id="icon-tp" viewBox="0 0 24 24">
+        <path fill="#00b67a" d="M12 0L14.59 8.41H23.51L16.46 13.59L19.05 22L12 16.82L4.95 22L7.54 13.59L0.49 8.41H9.41L12 0Z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <style>
+    /* ── CI-Variablen ── */
+    :root {
+      --bg:          #151824;
+      --card-bg:     #f2f0ed;
+      --card-radius: 14px;
+      --text-dark:   #151824;
+      --text-muted:  rgba(21, 24, 36, 0.45);
+      --text-light:  #f2f0ed;
+      --text-dim:    rgba(242, 240, 237, 0.45);
+      --orange:      #F85B05;
+      --orange-dark: #d94e04;
+      --star:        #f4c430;
+      --tp-green:    #00b67a;
+      --font:        'Rubik', sans-serif;
+      --gap:         16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Nur für Vorschau — im Shop nicht nötig */
+    body {
+      font-family: var(--font);
+      background: #0d1018;
+      padding: 60px 0;
+    }
+
+    /* ─────────────────────────────────────
+       Widget
+    ───────────────────────────────────── */
+    .reviews-widget {
+      background: var(--bg);
+      padding: 52px 20px 44px;
+      font-family: var(--font);
+    }
+
+    /* ── Rating-Header ── */
+    .ratings-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 10px;
+    }
+
+    .platform-rating {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .platform-logo { width: 32px; height: 32px; flex-shrink: 0; }
+
+    .rating-score { font-size: 21px; font-weight: 600; color: var(--text-light); }
+
+    .star-g  { color: var(--star);     font-size: 19px; }
+    .star-tp { color: var(--tp-green); font-size: 19px; }
+
+    /* ── Gesamtzahl ── */
+    .total-count {
+      text-align: center;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      color: var(--text-dim);
+      margin-bottom: 36px;
+    }
+
+    .total-count strong { color: var(--text-light); font-weight: 600; }
+
+    /* ─────────────────────────────────────
+       Karussell — CSS Scroll Snap
+    ───────────────────────────────────── */
+    .carousel-outer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* Scrollbarer Track */
+    .carousel-scroll {
+      flex: 1;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;        /* Firefox */
+      padding-bottom: 4px;          /* Platz für Box-Shadow der Karten */
+    }
+
+    .carousel-scroll::-webkit-scrollbar { display: none; }
+
+    .carousel-track {
+      display: flex;
+      gap: var(--gap);
+      /* Breite automatisch durch Kinder bestimmt */
+    }
+
+    /* ── Karte ── */
+    .review-card {
+      /* Desktop: 3 Karten */
+      flex: 0 0 calc((100% - 2 * var(--gap)) / 3);
+      scroll-snap-align: start;
+      background: var(--card-bg);
+      border-radius: var(--card-radius);
+      padding: 22px;
+      color: var(--text-dark);
+      position: relative;
+      /* Karte fühlt sich nicht abgeschnitten an */
+      box-shadow: 0 2px 12px rgba(0,0,0,.15);
+    }
+
+    /* Tablet: 2 Karten */
+    @media (max-width: 860px) {
+      .review-card { flex: 0 0 calc((100% - var(--gap)) / 2); }
+    }
+
+    /* Mobile: 1 Karte + Peek der nächsten */
+    @media (max-width: 540px) {
+      .carousel-outer { gap: 6px; }
+      .review-card    { flex: 0 0 calc(100% - 28px); }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-right: 28px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #d4d1cd;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 1.3;
+      color: var(--text-dark);
+    }
+
+    .review-date {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .platform-icon {
+      position: absolute;
+      top: 18px;
+      right: 16px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .stars { display: flex; gap: 2px; margin-bottom: 10px; }
+    .star  { color: var(--star); font-size: 14px; line-height: 1; }
+
+    .review-text {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-dark);
+    }
+
+    /* ── Nav-Buttons ── */
+    .nav-btn {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(242, 240, 237, 0.08);
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      /* Immer auf Höhe der Karten zentriert */
+      align-self: center;
+    }
+
+    .nav-btn:hover   { background: rgba(242, 240, 237, 0.16); }
+    .nav-btn:disabled { opacity: 0.2; pointer-events: none; }
+
+    @media (max-width: 540px) {
+      .nav-btn { width: 32px; height: 32px; }
+    }
+
+    /* ── Dot-Indikator ── */
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 20px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(242, 240, 237, 0.2);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .dot.active {
+      background: var(--orange);
+      transform: scale(1.3);
+    }
+
+    /* ── CTA-Buttons ── */
+    .cta-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--orange);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      color: #fff;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+
+    .cta-btn:hover  { background: var(--orange-dark); transform: translateY(-1px); }
+    .cta-btn:active { transform: translateY(0); }
+    .cta-btn svg    { width: 18px; height: 18px; flex-shrink: 0; }
+
+    @media (max-width: 540px) {
+      .cta-container { flex-direction: column; align-items: center; }
+      .cta-btn { width: 100%; max-width: 280px; justify-content: center; }
+    }
+
+    /* ── Footer ── */
+    .widget-footer {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+    }
+  </style>
+</head>
+<body>
+
+<section class="reviews-widget" aria-label="Kundenbewertungen">
+
+  <!-- Plattform-Ratings -->
+  <div class="ratings-header">
+    <div class="platform-rating">
+      <svg class="platform-logo" aria-label="Google"><use href="#icon-google"/></svg>
+      <span class="rating-score">4.8</span>
+      <span class="star-g">★</span>
+    </div>
+    <div class="platform-rating">
+      <svg class="platform-logo" aria-label="Trustpilot"><use href="#icon-tp"/></svg>
+      <span class="rating-score">4.5</span>
+      <span class="star-tp">★</span>
+    </div>
+  </div>
+
+  <p class="total-count"><strong>63</strong> verifizierte Bewertungen</p>
+
+  <!-- Karussell -->
+  <div class="carousel-outer">
+
+    <button class="nav-btn" id="btn-prev" aria-label="Zurück" disabled>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </button>
+
+    <div class="carousel-scroll" id="carousel-scroll">
+      <div class="carousel-track" id="carousel-track">
+
+        <!-- Karte 1 — Google -->
+        <article class="review-card">
+          <svg class="platform-icon" aria-label="Google"><use href="#icon-google"/></svg>
+          <div class="card-header">
+            <img class="avatar" src="https://d2ac3gh6wzqv30.cloudfront.net/default/widgets/user/profile/no_image.png" alt="" loading="lazy">
+            <div>
+              <div class="user-name">Katerina Fillmore</div>
+              <div class="review-date">17. Dezember 2025</div>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 von 5 Sternen">
+            <span class="star" aria-hidden="true">★★★★★</span>
+          </div>
+          <p class="review-text">Tolle Pilze! Komme gerne wieder ;)</p>
+        </article>
+
+        <!-- Karte 2 — Trustpilot -->
+        <article class="review-card">
+          <svg class="platform-icon" aria-label="Trustpilot"><use href="#icon-tp"/></svg>
+          <div class="card-header">
+            <img class="avatar" src="https://d2ac3gh6wzqv30.cloudfront.net/default/widgets/user/profile/no_image.png" alt="" loading="lazy">
+            <div>
+              <div class="user-name">Steffi</div>
+              <div class="review-date">8. Dezember 2025</div>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 von 5 Sternen">
+            <span class="star" aria-hidden="true">★★★★★</span>
+          </div>
+          <p class="review-text">Tolles Produkt, hübsch verpackt und bei Fragen/Problemen gibt es schnell eine Rückmeldung.</p>
+        </article>
+
+        <!-- Karte 3 — Trustpilot -->
+        <article class="review-card">
+          <svg class="platform-icon" aria-label="Trustpilot"><use href="#icon-tp"/></svg>
+          <div class="card-header">
+            <img class="avatar" src="https://d2ac3gh6wzqv30.cloudfront.net/default/widgets/user/profile/no_image.png" alt="" loading="lazy">
+            <div>
+              <div class="user-name">igab</div>
+              <div class="review-date">4. November 2025</div>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 von 5 Sternen">
+            <span class="star" aria-hidden="true">★★★★★</span>
+          </div>
+          <p class="review-text">Tolles Produkt :-) Ich habe diesmal eine andere Pilzsorte besorgt. Letztes Jahr hatte ich schon die Austernpilze. Die sind sehr gut gewachsen…</p>
+        </article>
+
+        <!-- Karte 4 — Google -->
+        <article class="review-card">
+          <svg class="platform-icon" aria-label="Google"><use href="#icon-google"/></svg>
+          <div class="card-header">
+            <img class="avatar" src="https://d2ac3gh6wzqv30.cloudfront.net/default/widgets/user/profile/no_image.png" alt="" loading="lazy">
+            <div>
+              <div class="user-name">Platzhalter</div>
+              <div class="review-date">Oktober 2025</div>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 von 5 Sternen">
+            <span class="star" aria-hidden="true">★★★★★</span>
+          </div>
+          <p class="review-text">Hier kommt später der Text der nächsten Bewertung aus der API.</p>
+        </article>
+
+        <!-- Karte 5 — Trustpilot -->
+        <article class="review-card">
+          <svg class="platform-icon" aria-label="Trustpilot"><use href="#icon-tp"/></svg>
+          <div class="card-header">
+            <img class="avatar" src="https://d2ac3gh6wzqv30.cloudfront.net/default/widgets/user/profile/no_image.png" alt="" loading="lazy">
+            <div>
+              <div class="user-name">Platzhalter</div>
+              <div class="review-date">September 2025</div>
+            </div>
+          </div>
+          <div class="stars" aria-label="5 von 5 Sternen">
+            <span class="star" aria-hidden="true">★★★★★</span>
+          </div>
+          <p class="review-text">Und noch eine weitere Bewertung aus der Trustpilot-Anbindung.</p>
+        </article>
+
+      </div>
+    </div>
+
+    <button class="nav-btn" id="btn-next" aria-label="Weiter">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+    </button>
+
+  </div>
+
+  <!-- Dot-Indikator (JS befüllt) -->
+  <div class="carousel-dots" id="dots" aria-hidden="true"></div>
+
+  <!-- Direkte Bewertungs-Buttons -->
+  <div class="cta-container">
+    <a href="https://g.page/r/DEIN_GOOGLE_PLACE_ID/review" target="_blank" rel="noopener" class="cta-btn">
+      <svg aria-hidden="true"><use href="#icon-google"/></svg>
+      Bei Google bewerten
+    </a>
+    <a href="https://de.trustpilot.com/evaluate/pilzling.shop" target="_blank" rel="noopener" class="cta-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M12 0L14.59 8.41H23.51L16.46 13.59L19.05 22L12 16.82L4.95 22L7.54 13.59L0.49 8.41H9.41L12 0Z"/></svg>
+      Bei Trustpilot bewerten
+    </a>
+  </div>
+
+  <p class="widget-footer">Bewertungen verifiziert via Google &amp; Trustpilot</p>
+
+</section>
+
+<script>
+  const scroll  = document.getElementById('carousel-scroll');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const dotsEl  = document.getElementById('dots');
+
+  // ── Dots aufbauen ──
+  const cards = scroll.querySelectorAll('.review-card');
+  cards.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => scrollToCard(i));
+    dotsEl.appendChild(d);
+  });
+
+  function cardWidth() {
+    return cards[0].offsetWidth + 16; // Breite + Gap
+  }
+
+  function currentIndex() {
+    return Math.round(scroll.scrollLeft / cardWidth());
+  }
+
+  function scrollToCard(i) {
+    scroll.scrollTo({ left: i * cardWidth(), behavior: 'smooth' });
+  }
+
+  function updateState() {
+    const idx      = currentIndex();
+    const atStart  = scroll.scrollLeft <= 2;
+    const atEnd    = scroll.scrollLeft >= scroll.scrollWidth - scroll.clientWidth - 2;
+
+    btnPrev.disabled = atStart;
+    btnNext.disabled = atEnd;
+
+    dotsEl.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === idx);
+    });
+  }
+
+  btnPrev.addEventListener('click', () => {
+    scroll.scrollBy({ left: -cardWidth(), behavior: 'smooth' });
+  });
+
+  btnNext.addEventListener('click', () => {
+    scroll.scrollBy({ left: cardWidth(), behavior: 'smooth' });
+  });
+
+  scroll.addEventListener('scroll', updateState, { passive: true });
+
+  updateState();
+</script>
+
+</body>
+</html>

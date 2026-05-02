@@ -1,0 +1,38 @@
+# Credentials — niemals committen
+src/.env
+src/.env.*
+src/config/.env
+src/config/.env.*
+.env
+.env.local
+.env.production
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS-Junk
+Thumbs.db
+.DS_Store
+*.lnk
+
+# Build-/Temp-Artefakte
+*.log
+*.cache
+*.tmp
+node_modules/
+*.bak
+*.old
+*.orig
+
+# DB-Backups (SQL-Migrations bleiben im Repo, aber Live-Exports nicht)
+*.sql.gz
+_db/current_live_export.sql
+_db/*_export.sql
+_db/backup_*.sql
+_archive/*.sql
+_archive/**/*.sql
+
+# Old / zu grosse References (bei Bedarf)
+references/old-data/

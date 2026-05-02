@@ -1,0 +1,66 @@
+# Eigennamen + technische Begriffe die ASCII-"ae/oe/ue" enthalten dürfen.
+# Eine Zeile pro Wort/Begriff (case-sensitive Wort-Match).
+# Wird vom Pre-commit-Hook (_tools/check_umlauts.py) gelesen.
+Bauer
+Goethe
+Boeing
+Auer
+Mueller
+Schueler
+Schroeder
+queue
+queued
+queuing
+true
+false
+guest
+suite
+sequence
+sequences
+fuel
+duel
+duet
+fuelled
+build
+builds
+building
+built
+guidelines
+guideline
+guide
+guides
+guided
+guard
+guards
+guarded
+issue
+issues
+issued
+manufacturer
+manufactured
+issuer
+ueber-cool
+nuance
+nuances
+guess
+guessed
+suedu
+fault
+faults
+faulted
+foul
+fouled
+# SQL-Spalten / Flag-Identifier die im Code als snake_case mit ASCII-ue bleiben müssen
+ueberfaellig
+ist_ueberfaellig
+bio_geprueft_von
+bio_geprueft_am
+bio_pruefung_ausstehend
+bio_compliance_pruefen
+qualitaet_nachtragen
+qualitaet_block
+# Charge-System (Schicht 5) — Code-Identifier + Plan-Filenames
+stueckliste
+stueckliste_jtl_artikel_id
+ist_stueckliste
+vater-stueckliste-bestand-konzept
