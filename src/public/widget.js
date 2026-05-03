@@ -27,6 +27,19 @@
         return;
     }
 
+    // === Mock-Shop-Configs (Phase 2a) ===
+    // In Phase 2b durch fetch('/api/shop-config?shop=...') oder
+    // shop_config-Response aus /api/reviews ersetzt — die Werte kommen aus
+    // shops.ci_primary / ci_secondary in der DB.
+    //
+    // Pro Shop andere Akzent-Farbe (Background bleibt Pilzling-Dark fuer
+    // Konsistenz im Marken-Dachdesign).
+    const MOCK_SHOP_CONFIGS = {
+        'pilzling':    { ci_primary: '#F85B05', ci_secondary: '#7a4f1a', name: 'Pilzling' },
+        'pilzwald':    { ci_primary: '#89B455', ci_secondary: '#507227', name: 'Pilzwald' },
+        'shroom-boom': { ci_primary: '#C87449', ci_secondary: '#FFD8C2', name: 'Shroom Boom' },
+    };
+
     // === Mock-Reviews für Phase 1. Später via fetch ersetzt. ===
     const MOCK_REVIEWS = [
         {
@@ -79,6 +92,10 @@
     // === CSS injizieren ===
     const css = `
 .sporeprint-widget {
+    /* Default-Tokens — werden pro Shop dynamisch via inline-style ueberschrieben
+       (siehe applyShopBranding()). Background bleibt Pilzling-Dark als
+       Marken-Dach, --sp-accent ist die Shop-eigene Akzentfarbe (CTAs,
+       gefuellte Sporen, Hover-Underline). */
     --sp-bg: #1a1f2e;
     --sp-card: #ffffff;
     --sp-text: #1a1a1a;
@@ -86,6 +103,8 @@
     --sp-light: #ffffff;
     --sp-light-60: rgba(255,255,255,0.6);
     --sp-star: #f4c430;
+    --sp-accent: #F85B05;
+    --sp-accent-soft: rgba(248, 91, 5, 0.15);
     --sp-radius: 12px;
     --sp-gap: 16px;
     --sp-font: system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -105,6 +124,10 @@
     color: var(--sp-light-60);
     letter-spacing: 0.05em;
     text-transform: uppercase;
+}
+.sporeprint-widget__header strong {
+    color: var(--sp-accent);
+    font-weight: 600;
 }
 .sporeprint-widget__track {
     display: flex;
@@ -146,7 +169,7 @@
     flex-shrink: 0;
 }
 .sporeprint-card__spore--filled {
-    color: var(--sp-star);
+    color: var(--sp-accent);
 }
 .sporeprint-card__spore--empty {
     color: rgba(0, 0, 0, 0.12);
@@ -184,8 +207,12 @@
     color: inherit;
     text-decoration: none;
     border-bottom: 1px dotted rgba(255,255,255,0.4);
+    transition: color 0.15s ease, border-color 0.15s ease;
 }
-.sporeprint-widget__footer a:hover { color: var(--sp-light); }
+.sporeprint-widget__footer a:hover {
+    color: var(--sp-accent);
+    border-bottom-color: var(--sp-accent);
+}
 @media (max-width: 480px) {
     .sporeprint-card { flex-basis: 240px; }
 }
@@ -269,13 +296,49 @@
         return card;
     }
 
-    function renderWidget(container, reviews) {
+    /**
+     * Schreibt die Shop-spezifischen CI-Farben als Inline-CSS-Variablen
+     * auf den Container. Erlaubt pro Shop einen eigenen Akzent ohne
+     * separate Stylesheets.
+     */
+    function applyShopBranding(container, shopConfig) {
+        if (!shopConfig) return;
+        if (shopConfig.ci_primary) {
+            container.style.setProperty('--sp-accent', shopConfig.ci_primary);
+            // Akzent-Soft: 15% Opacity-Variante fuer dezente Hintergruende
+            container.style.setProperty(
+                '--sp-accent-soft',
+                hexToRgba(shopConfig.ci_primary, 0.15)
+            );
+        }
+    }
+
+    function hexToRgba(hex, alpha) {
+        const m = hex.replace('#', '').match(/.{1,2}/g);
+        if (!m || m.length < 3) return 'rgba(248, 91, 5, ' + alpha + ')';
+        const [r, g, b] = m.slice(0, 3).map(h => parseInt(h, 16));
+        return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+    }
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = String(str);
+        return div.innerHTML;
+    }
+
+    function renderWidget(container, reviews, shopConfig) {
         container.classList.add('sporeprint-widget');
         container.innerHTML = '';
 
+        applyShopBranding(container, shopConfig);
+
         const header = document.createElement('div');
         header.className = 'sporeprint-widget__header';
-        header.textContent = 'Was unsere Kund:innen sagen';
+        if (shopConfig && shopConfig.name) {
+            header.innerHTML = 'Was unsere Kund:innen über <strong>' + escapeHtml(shopConfig.name) + '</strong> sagen';
+        } else {
+            header.textContent = 'Was unsere Kund:innen sagen';
+        }
         container.appendChild(header);
 
         const track = document.createElement('div');
@@ -310,9 +373,10 @@
     injectStyles();
     const container = findOrCreateContainer();
 
-    // Phase 1: Mock-Data direkt rendern.
-    // Phase 2: durch fetch() ersetzen, siehe Kommentar unten.
-    renderWidget(container, MOCK_REVIEWS);
+    // Phase 2a: Mock-Data + Mock-Shop-Configs.
+    // Phase 2b: beides durch fetch() ersetzen, siehe Kommentar unten.
+    const shopConfig = MOCK_SHOP_CONFIGS[shopId] || null;
+    renderWidget(container, MOCK_REVIEWS, shopConfig);
 
     /*
      * Phase-2-Implementierung (sobald APIs liefern):
