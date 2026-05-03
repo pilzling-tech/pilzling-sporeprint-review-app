@@ -38,9 +38,16 @@ $lastSync = dbQueryOne(
     <a href="/dashboard.php" class="app-header__brand">Sporeprint</a>
     <nav class="app-header__nav">
         <a href="/dashboard.php" class="is-active">Dashboard</a>
-        <a href="/widget-test.php">Widget-Vorschau</a>
+        <a href="/reviews.php">Reviews</a>
+        <a href="/replies.php">Antworten</a>
+        <a href="/analytics.php">Analytics</a>
+        <a href="/widget-config.php">Widget</a>
+        <a href="/qr.php">QR &amp; Link</a>
+        <a href="/shops.php">Shops</a>
+        <a href="/settings.php">Einstellungen</a>
     </nav>
     <div class="app-header__user">
+        <span class="text-muted">Shop: <strong><?= htmlspecialchars($_SESSION['active_shop'] ?? 'pilzling') ?></strong></span>
         <span><?= htmlspecialchars($user ?? '') ?></span>
         <a href="/logout.php">Logout</a>
     </div>
@@ -52,12 +59,10 @@ $lastSync = dbQueryOne(
     </div>
 
     <section class="status-block">
-        <h2>Phase 1 — Foundation</h2>
+        <h2>System-Status</h2>
         <ul>
-            <li class="status-ok">Backend-Helper (lib/) live</li>
-            <li class="status-ok">Public-API-Endpoint <code>/api/reviews</code> mit Härtung aktiv</li>
-            <li class="status-ok">Admin-Login + Session</li>
-            <li class="status-ok">Schema v1 eingespielt — <?= $shopCount ?> Shops konfiguriert, <?= $reviewCount ?> Reviews in DB</li>
+            <li class="status-ok">Backend-Foundation + Phase-3-Pages live</li>
+            <li class="status-ok">Schema v1 + v2 eingespielt — <?= $shopCount ?> Shops, <?= $reviewCount ?> Reviews in DB</li>
             <li class="status-pending">Google Reviews-API wartet auf Freigabe</li>
             <li class="status-pending">Trustpilot Public-API wartet auf Freigabe</li>
             <?php if ($lastSync): ?>
@@ -76,10 +81,6 @@ $lastSync = dbQueryOne(
             <h2>Funktions-Bereiche</h2>
         </div>
 
-        <div class="callout callout--info">
-            <strong>Hinweis:</strong> Die Funktions-Bereiche sind noch in Entwicklung und werden mit <strong>Phase 3</strong> aktiv. Klick auf einen Bereich liefert aktuell 404.
-        </div>
-
         <div class="grid grid--2">
             <a href="/reviews.php" class="hub-tile">
                 <h3>Reviews-Übersicht</h3>
@@ -95,15 +96,23 @@ $lastSync = dbQueryOne(
             </a>
             <a href="/widget-config.php" class="hub-tile">
                 <h3>Widget-Konfigurator</h3>
-                <p>Layout, Filter (min Sterne, max Items), Custom-CSS pro Shop.</p>
+                <p>Layout, Filter (min Sterne, max Items), Theme-Overrides, Embed-Code.</p>
             </a>
             <a href="/qr.php" class="hub-tile">
-                <h3>QR-Code-Generator</h3>
-                <p>QR-Codes für Verpackung, Marktstand, etc. — führen direkt zur Bewertungsseite.</p>
+                <h3>QR-Code &amp; Bewertungslink</h3>
+                <p>QR-Codes für Verpackung &amp; Marktstand. Bewertungs-Landing-Page-Konfigurator.</p>
             </a>
             <a href="/shops.php" class="hub-tile">
                 <h3>Shop-Switcher</h3>
                 <p>Pilzling / Pilzwald / Shroom Boom — alles in einer Oberfläche, Multi-Tenant.</p>
+            </a>
+            <a href="/settings.php" class="hub-tile">
+                <h3>Einstellungen</h3>
+                <p>Benachrichtigungs-E-Mails, API-Integrationen, Konto.</p>
+            </a>
+            <a href="/widget-test.php" class="hub-tile">
+                <h3>Widget-Vorschau</h3>
+                <p>Live-Test des Widgets mit Shop-Switcher — sieht aus wie im echten JTL-Shop.</p>
             </a>
         </div>
     </section>

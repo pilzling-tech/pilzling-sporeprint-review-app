@@ -363,10 +363,23 @@ Jede Phase ein Commit. Sequenz für die Nacht:
 10. `feat(public): feedback.php — Bewertungs-Landing-Page`
 11. Plus Roadmap + ARCHITEKTUR.md + Memory-Updates
 
-## Stand der Nacht (wird live gepflegt)
+## Stand der Nacht (gepflegt während des Builds)
 
 - **04:15** Plan-Anlage komplett, Backend-Screenshots inventarisiert (15 Stück durchgesehen)
-- **(updates folgen mit jedem Commit)**
+- **04:35** Phase A: schema_v2.sql + Migrations-README-Update committed
+- **04:50** Phase B: widget.js Komplett-Refactor (586 Zeilen, 11 Features) committed
+- **05:05** Phase C: reviews.php mit Filter-Sidebar + 3 Inline-Actions committed
+- **05:15** Phase D: replies.php (Editor + Liste) + Reply-Submit committed
+- **05:30** Phase E: analytics.php mit Counter-Cards + Bar-Chart + Funnel + Line-Chart committed
+- **05:45** Phase F: widget-config.php mit Live-Preview-Iframe + Theme-Override-Picker committed
+- **05:55** Phase G: qr.php — Bewertungslink + QR-Code via QuickChart.io committed
+- **06:10** Phase H: shops.php — Multi-Tenant-Switch + Stammdaten-Edit committed
+- **06:25** Phase I: settings.php — 3-Tab-Konfig (Notifications/Integrationen/Konto) committed
+- **06:40** Phase J: public/feedback.php — Bewertungs-Landing-Page committed
+- **06:50** Dashboard-Update: alle Hub-Tile-Links funktional, Phase-3-Hinweis-Callout entfernt, Top-Nav um alle Pages erweitert
+- **07:00** Doku-Updates (ARCHITEKTUR, ROADMAP, CLAUDE.md, MEMORY.md) committed
+
+**Status:** Phase A-J komplett. Phase K (API-Anbindung) wartet auf Google + Trustpilot Freigaben.
 
 ## Referenzen
 

@@ -359,6 +359,7 @@ Wird laufend gepflegt. Jeder neue Endpoint muss hier eingetragen werden (siehe S
 | `/` (`index.php`) | GET | keiner | Stub-Seite, Inline-CSS mit Sync-Pflicht-Kommentar |
 | `/widget.js` | GET | keiner (statisches Asset) | Widget-Loader, embedbar im JTL-Shop |
 | `/api/reviews?shop=<id>` | GET | `enforcePublicApiHardening()` (alle 6 Layer) | Reviews-Liste für Widget, gefiltert nach `widget_configs` |
+| `/feedback?shop=<slug>` | GET | keiner | Bewertungs-Landing-Page (vom QR-Code + Widget-CTA), zeigt Plattform-Wahl-Buttons (Google / Trustpilot / Shop) |
 
 ### Admin Endpoints (`src/admin/`)
 
@@ -367,13 +368,15 @@ Wird laufend gepflegt. Jeder neue Endpoint muss hier eingetragen werden (siehe S
 | `/index.php` | GET, POST | keiner (Login-Form) — cPanel-Verzeichnisschutz greift davor | Login-Seite mit CSRF |
 | `/logout.php` | GET | keiner | Session zerstören, Redirect zu Login |
 | `/dashboard.php` | GET | `requireLogin()` | Admin-Hub — verlinkt auf Sub-Pages der Funktions-Bereiche |
-| `/widget-test.php` | GET | `requireLogin()` | Live-Test des Widgets ohne JTL-Embedding (intern) |
-| `/reviews.php` | GET | `requireLogin()` | Reviews-Übersicht (Filter, Antwort-Liste) — **geplant Phase 3** |
-| `/replies.php` | GET | `requireLogin()` | Antwort-Management (Push-Status, Reply-Editor) — **geplant Phase 3** |
-| `/analytics.php` | GET | `requireLogin()` | Wachstumsgraph, Funnel, Durchschnitt pro Plattform/Shop — **geplant Phase 3** |
-| `/widget-config.php` | GET, POST | `requireLogin()` | Pro-Shop-Widget-Konfigurator (Layout, Filter, Custom-CSS) — **geplant Phase 3** |
-| `/qr.php` | GET | `requireLogin()` | QR-Code-Generator für Verpackung/Marktstand — **geplant Phase 3** |
-| `/shops.php` | GET | `requireLogin()` | Shop-Switcher / Multi-Tenant-Verwaltung — **geplant Phase 3** |
+| `/widget-test.php` | GET | `requireLogin()` | Live-Test des Widgets, plus `?embed=1` für iframe-Embedding aus widget-config.php |
+| `/reviews.php` | GET | `requireLogin()` | Reviews-Liste mit Filter (Search, Source, Stars, Visibility, Has-Reply, Date-Range) + Inline-Actions |
+| `/api/review-action.php` | POST | `requireLogin()` + CSRF | Visibility-Toggle (hide/show/flag) |
+| `/replies.php` | GET, POST | `requireLogin()` | Reply-Editor (mit `?review_id=X`) oder Liste aller Antworten |
+| `/analytics.php` | GET | `requireLogin()` | Counter-Cards + Bar-Chart + Funnel + Line-Chart |
+| `/widget-config.php` | GET, POST | `requireLogin()` | Pro-Shop-Widget-Konfigurator (Layout, Filter, Theme-Overrides, Custom-CSS) + Live-Preview-Iframe + Embed-Code |
+| `/qr.php` | GET, POST | `requireLogin()` | Bewertungslink-Konfigurator (Slug + Title + Text) + QR-Code-Generation via QuickChart.io |
+| `/shops.php` | GET, POST | `requireLogin()` | Shop-Switcher + Stammdaten-Edit (`?action=switch&shop=X`, `?action=edit&shop=X`) |
+| `/settings.php` | GET, POST | `requireLogin()` | 3-Tab-Settings: Benachrichtigungen / Integrationen / Konto |
 | `/oauth/google/callback.php` | GET | keiner (OAuth-Callback) — eigene Pfad-Validierung | Google-OAuth-Redirect-Endpoint (Phase Google-API) |
 | `/api/reply.php` | POST | `requireLogin()` + CSRF | Antwort auf Review verfassen + an Quelle pushen (Phase 3) |
 
