@@ -8,9 +8,13 @@ Roter Faden über alle Vorhaben im Sporeprint-Projekt. Pläne werden als Feature
 
 ## Aktueller Fokus
 
-→ **2026-05-03:** **Detailplan Phase 0 angelegt.** Konzept-Stufe 3 läuft. Aktiver Plan: [`2026-05-03-phase-0-foundation.md`](2026-05-03-phase-0-foundation.md) — Foundation aufbauen (Docs, Repo, Schema v1, externe API-Voraussetzungen, WinSCP-Auto-Deploy). cPanel-Setup ist bereits live (Subdomains, DB, Verzeichnisschutz, Bitwarden).
+→ **2026-05-03:** **Phase 1 Backend-Foundation Code-seitig abgeschlossen** (Browser-Verifikation steht aus). Aktiver Plan: [`2026-05-03-phase-1-backend-foundation.md`](2026-05-03-phase-1-backend-foundation.md). Implementiert: lib-Foundation (db, helpers, auth, rate_limit, public_api_guard), Admin-Login mit CSRF + Session, Public-API-Endpoint mit voller 6-Layer-Härtung, Admin-Dashboard-Stub, Cron-Cleanup-Skript für Rate-Limits, Widget-Skelett mit Mock-Data + Test-Seite. Workspace-Pattern-SSOT [`references/php-patterns/`](../../../references/php-patterns/) angelegt mit 9 wiederverwendbaren Patterns (.htaccess-Hardening, env+PDO, API-Envelope, Auth-Boilerplate, Cron-Token, Migrations-Konvention, Public-API-Hardening Erstwerk, Sicherheits-Hygiene-Checkliste, Umlaut-Pre-Commit).
 
-**Wichtige Entscheidung 2026-05-03:** **JTL REST API zurückgestellt** — JTL-Beta wird vermutlich kostenpflichtig (~100 €/Monat). Workaround: JTL-Produktbewertungen später via direkt-SQL aus JTL-MSSQL-DB ziehen (production-app hat das Connection-Pattern bereits). Eigener Plan dafür kommt in Phase 1.5 oder 2.5. Phase 1 läuft erstmal nur mit Google + Trustpilot.
+**Phase 0 cPanel-Setup ✅ erledigt** (2026-05-02): Subdomains, DB, Verzeichnisschutz (mit cp:ppd-Block-Fix), Bitwarden, WinSCP-Auto-Deploy.
+
+**Wichtige Entscheidung 2026-05-03:** **JTL REST API zurückgestellt** — JTL-Beta wird vermutlich kostenpflichtig (~100 €/Monat). Workaround: JTL-Produktbewertungen später via direkt-SQL aus JTL-MSSQL-DB ziehen (production-app hat das Connection-Pattern bereits). Eigener Plan dafür kommt in Phase 1.5 oder 2.5.
+
+**Wartet auf:** Google Reviews-API + Trustpilot Public-API Freigabe (3-14 Tage). Sobald **eine** der APIs grün ist, fehlen nur noch zwei API-Client-Files (`lib/api_clients/google.php` / `trustpilot.php`) + Cron-Skripte.
 
 **Hinweis:** [`docs/ARCHITEKTUR.md`](../docs/ARCHITEKTUR.md) zeigt aktuell noch den ursprünglichen Vercel-Stand und wird in Phase 0 des Detailplans auf den neuen Soll-Zustand umgeschrieben.
 
