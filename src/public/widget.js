@@ -135,6 +135,22 @@
     font-size: 16px;
     letter-spacing: 1px;
 }
+.sporeprint-card__rating {
+    display: inline-flex;
+    gap: 3px;
+    align-items: center;
+}
+.sporeprint-card__spore {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+.sporeprint-card__spore--filled {
+    color: var(--sp-star);
+}
+.sporeprint-card__spore--empty {
+    color: rgba(0, 0, 0, 0.12);
+}
 .sporeprint-card__product {
     font-size: 12px;
     color: var(--sp-muted);
@@ -184,18 +200,48 @@
     }
 
     // === Render-Helper ===
-    function renderStars(count) {
-        return '★★★★★☆☆☆☆☆'.slice(5 - count, 10 - count);
+    //
+    // Sporen-Rating-Visual: stilisierter Sporenabdruck als SVG.
+    // Statt 5 Sterne zeigen wir 5 kleine "Sporen-Cluster" — ein Pilz-eigenes
+    // Rating, das mit dem Brand-Namen "Sporeprint" semantisch zusammenhaengt.
+    // Farb-Code: gefuellt = volle Bewertung, leer = nicht erreichte Bewertung.
+    //
+    // Geometrie: ein zentraler Punkt + 6 ringsherum verteilte kleinere Punkte.
+    // Wirkt wie ein klassischer Sporenabdruck unter dem Mikroskop.
+    const SPORE_SVG = `<svg class="sporeprint-card__spore" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"/>
+        <circle cx="12" cy="4" r="1.6"/>
+        <circle cx="12" cy="20" r="1.6"/>
+        <circle cx="4" cy="12" r="1.6"/>
+        <circle cx="20" cy="12" r="1.6"/>
+        <circle cx="6.5" cy="6.5" r="1.4"/>
+        <circle cx="17.5" cy="6.5" r="1.4"/>
+        <circle cx="6.5" cy="17.5" r="1.4"/>
+        <circle cx="17.5" cy="17.5" r="1.4"/>
+    </svg>`;
+
+    function renderRating(count) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'sporeprint-card__rating';
+        wrapper.setAttribute('role', 'img');
+        wrapper.setAttribute('aria-label', count + ' von 5 Sporen');
+        for (let i = 1; i <= 5; i++) {
+            wrapper.insertAdjacentHTML(
+                'beforeend',
+                SPORE_SVG.replace(
+                    'class="sporeprint-card__spore"',
+                    'class="sporeprint-card__spore sporeprint-card__spore--' + (i <= count ? 'filled' : 'empty') + '"'
+                )
+            );
+        }
+        return wrapper;
     }
 
     function renderCard(review) {
         const card = document.createElement('article');
         card.className = 'sporeprint-card';
 
-        const stars = document.createElement('div');
-        stars.className = 'sporeprint-card__stars';
-        stars.textContent = renderStars(review.stars);
-        card.appendChild(stars);
+        card.appendChild(renderRating(review.stars));
 
         if (review.product_name) {
             const product = document.createElement('div');
