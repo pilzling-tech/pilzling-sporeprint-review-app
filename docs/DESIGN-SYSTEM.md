@@ -475,6 +475,20 @@ In Tabellen: **TT.MM.JJJJ** rechtsbündig (Klasse `.col-datum`). Mit Uhrzeit nur
 </article>
 ```
 
+### Sporeprint-Architektur-Hinweis: Hub vs. Sub-Dashboard
+
+**Wichtig — wo wir uns von production-app unterscheiden:**
+
+production-app ist als **Sub-Dashboard-Layout** aufgebaut: eine Page (z.B. Wareneingang) hat **View-Tabs** intern, in denen unterschiedliche Funktionen erscheinen. Dafür hat production-app `.action-tile` (Outline-Style) als Sektions-interne Quick-Access.
+
+Sporeprint ist als **flacher Hub** aufgebaut: Dashboard zeigt 6 Top-Level-Bereiche (Reviews, Antworten, Analytics, Widget-Konfig, QR-Code, Shop-Switcher), jeder führt auf eine **eigene Sub-Page** mit der vollständigen Funktion. Keine View-Tabs.
+
+**Konsequenz:** Sporeprint nutzt **`.hub-tile`** (eigenständige Komponente, gefüllter Blau-Dark-Style) statt production-app's `.action-tile`. Die Hub-Tiles sind die **zentrale Top-Level-Navigation** — daher mehr visuelles Gewicht (filled statt outline). Dokumentation siehe direkt nach den Card-Patterns unten.
+
+**Lehre:** Production-app als Pattern-Quelle nutzen, aber **bewusst** abweichen wo Sporeprint anders strukturiert ist. Nicht blind übernehmen.
+
+### Stub-Variante (Card)
+
 **Stub-Variante** (für Phase-3-Vorab-Karten — eigenständige Card auf Canvas):
 
 ```html
@@ -526,6 +540,58 @@ Zwei Patterns je nach Inhalt:
 - `.tile--stub` analog `.card--stub` — gestrichelter Border + italic muted "Kommt in Phase 3"-Marker
 
 **Anti-Pattern:** Niemals `.card .card` direkt verschachtelt — verdoppelt visuelle Schwere und wirkt unruhig. Wenn doppelte Schichtung nötig: äußere Schicht ist Card mit `__header`, innere Items sind Tiles.
+
+## 7b. Hub-Tiles (`.hub-tile`)
+
+**Sporeprint-spezifisch** — siehe Architektur-Hinweis oben.
+
+### Zweck
+
+Top-Level-Navigation auf dem Dashboard. Jeder Tile führt auf eine eigene Sub-Page (Reviews, Antworten, Analytics, etc.). Visuell prominent — dem User wird sofort klar: das ist eine klickbare Aktion, nicht ein Content-Block.
+
+### Markup
+
+```html
+<a href="/reviews.php" class="hub-tile">
+    <h3>Reviews-Übersicht</h3>
+    <p>Filter nach Plattform, Shop, Sternanzahl, Datum.</p>
+</a>
+```
+
+Wird üblicherweise in einem `.grid.grid--2` (Desktop) oder `.grid--3` angeordnet.
+
+### Stub-Variante
+
+Für Phase-3-Vorab-Tiles (Funktion noch nicht gebaut):
+
+```html
+<article class="hub-tile hub-tile--stub" aria-disabled="true">
+    <h3>Analytics</h3>
+    <p>Wachstumsgraph, Funnel, Durchschnitt pro Plattform.</p>
+</article>
+```
+
+`hub-tile--stub` rendert mit cream-Background, gestricheltem Border, dezentem italic "Kommt in Phase 3"-Marker, `pointer-events: none` (nicht klickbar). Wechsel auf `<a>`-Element + entfernen der Stub-Klasse aktiviert die Page sobald sie gebaut ist.
+
+### Styling-Details
+
+| Eigenschaft | Aktiv | Stub |
+|-------------|-------|------|
+| Background | Blau-Dark | Cream |
+| Text | Weiß | Dark + Muted |
+| Border | keine | gestrichelt 1.5px |
+| Shadow | Card-Shadow | keiner |
+| Hover | wechselt zu Orange + leichter Lift | nicht klickbar |
+| Min-Height | 140px | 140px |
+
+### Wann NICHT Hub-Tile sondern Card
+
+| Use-Case | Komponente |
+|----------|-----------|
+| Top-Level-Navigation auf Hub-Page | `.hub-tile` |
+| Content-Block mit Daten/Tabelle/Form | `.card` |
+| Section-Heading mit Sub-Funktionen, intern | `.card.card--stub` |
+| Mini-Items in einer größeren Card | `.tile` (siehe oben) |
 
 ## 8. Layout
 

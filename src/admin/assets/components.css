@@ -307,6 +307,82 @@ input.is-invalid:focus {
     opacity: 1;
 }
 
+/* =====================================================================
+   HUB-TILES (flache Top-Level-Navigation auf Hub-Pages)
+   =====================================================================
+   *
+   * Sporeprint ist als flacher Hub aufgebaut: Dashboard zeigt Top-Level-
+   * Bereiche (Reviews, Antworten, Analytics, Widget-Konfig, QR, Shop-Switcher),
+   * jeder fuehrt auf eine eigene Sub-Page mit der vollstaendigen Funktion.
+   * Hub-Tiles sind die prominente Navigation dorthin.
+   *
+   * Unterschied zu .card: Hub-Tiles sind klickbare <a>-Elemente, gefuellt
+   * Blau-Dark, mit Hover-Wechsel zu Orange. Visuell ein "grosser Button".
+   * Production-app nutzt fuer aehnliche Funktion ".action-tile" (Outline-
+   * Style) — Sporeprint geht bewusst filled-Variante weil flacher Hub-
+   * Aufbau und das die zentrale Top-Level-Navigation ist.
+   *
+   * Anti-Pattern: NIEMALS .card und .hub-tile mischen — entweder Content-
+   * Card oder Navigation-Tile, nicht beides.
+   */
+
+.hub-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    background: var(--color-accent-blau-dark);
+    color: var(--color-white);
+    border-radius: var(--radius);
+    text-decoration: none;
+    box-shadow: var(--shadow-card);
+    transition: all var(--transition-fast);
+    min-height: 140px;
+}
+.hub-tile:hover,
+.hub-tile:focus-visible {
+    background: var(--color-primary);
+    color: var(--color-white);
+    text-decoration: none;
+    box-shadow: var(--shadow-focus-orange);
+    transform: translateY(-1px);
+}
+.hub-tile h3 {
+    margin: 0;
+    color: inherit;
+    font-size: var(--font-size-lg);
+}
+.hub-tile p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: var(--font-size-sm);
+    flex: 1;
+    line-height: 1.4;
+}
+
+/* === Hub-Tile Stub-Variante (Funktion noch nicht gebaut) === */
+.hub-tile--stub {
+    background: var(--color-cream);
+    color: var(--color-text-muted);
+    border: 1.5px dashed var(--color-border);
+    box-shadow: none;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+.hub-tile--stub h3 {
+    color: var(--color-dark);
+}
+.hub-tile--stub p {
+    color: var(--color-text-muted);
+}
+.hub-tile--stub::after {
+    content: "Kommt in Phase 3";
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-style: italic;
+    margin-top: auto;
+}
+
 /* === Tiles (kompakte Items innerhalb einer Card mit Grid-Layout) ===
  *
  * Wenn eine .card als Section-Wrapper genutzt wird und drin liegt ein Grid
