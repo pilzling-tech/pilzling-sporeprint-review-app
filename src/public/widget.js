@@ -272,8 +272,37 @@
     color: var(--sp-accent);
     border-bottom-color: var(--sp-accent);
 }
+@media (max-width: 768px) {
+    .sporeprint-widget {
+        padding: 24px 12px 18px;
+    }
+    .sporeprint-widget__header {
+        font-size: 13px;
+        margin-bottom: 18px;
+    }
+}
 @media (max-width: 480px) {
-    .sporeprint-card { flex-basis: 240px; }
+    .sporeprint-widget {
+        padding: 20px 10px 14px;
+        border-radius: 8px;
+    }
+    .sporeprint-card {
+        flex-basis: 240px;
+        padding: 14px;
+        min-height: 160px;
+    }
+    .sporeprint-widget__header {
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        margin-bottom: 14px;
+    }
+    .sporeprint-card__content {
+        font-size: 13px;
+    }
+    .sporeprint-card__spore {
+        width: 16px;
+        height: 16px;
+    }
 }
 `;
 
