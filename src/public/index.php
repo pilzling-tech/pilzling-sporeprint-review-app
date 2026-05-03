@@ -19,8 +19,8 @@ header('Content-Type: text/html; charset=utf-8');
 <style>
 /* === PUBLIC-STUB INLINE-CSS — bewusst kein Cross-Subdomain-Asset-Sharing ===
  *
- * Bei Aenderungen in admin/assets/tokens.css die hier genutzten Werte
- * manuell nachziehen. Public-Stub wird selten geaendert, daher keine
+ * Bei Änderungen in admin/assets/tokens.css die hier genutzten Werte
+ * manuell nachziehen. Public-Stub wird selten geändert, daher keine
  * eigene CSS-Datei (Aufwand > Nutzen).
  *
  * Quelle der Werte: src/admin/assets/tokens.css :root
