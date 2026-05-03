@@ -408,6 +408,7 @@ Stylesheets in `src/admin/assets/`:
 |-------|-------|---------------------|
 | `lib/db.php` | DB-Zugriff (PDO-Singleton) | `getDb()` — gibt PDO-Instanz, nutzt `config/database.php` |
 | `lib/helpers.php` | API-Response + Format + Utility-Helpers | `jsonResponse($data, $status)`, `apiSuccess($data)`, `apiError($msg, $status)`, `binaryIp(string)`, `clientIp()`, `formatDate($iso, $mitUhrzeit)`, `humanTimeDiff($datetime)` |
+| `lib/nav.php` | App-Header SSOT — Top-Nav mit Dropdowns + Shop-Switcher | `renderAppHeader($currentPage)` — pflegt is-active-State pro Page, lädt Shop-Liste für Switcher-Dropdown, JS für Click-Toggle inline |
 | `lib/auth.php` | Single-Admin-Login + Session | `attemptLogin($user, $pw)`, `logout()`, `requireLogin()`, `currentUser()`, `isApiRequest()` |
 | `lib/rate_limit.php` | Sliding-Window-Rate-Limiter | `checkRateLimit($ipBinary, $limitPerMin, $windowMin): bool` — schreibt in `rate_limits`-Tabelle |
 | `lib/public_api_guard.php` | Public-API-Härtung (Layer 1-4) | `enforcePublicApiHardening($shopId): array` — CORS + Referer + Rate-Limit + Cache-Header, gibt `{shop_id, shop_row}` zurück |

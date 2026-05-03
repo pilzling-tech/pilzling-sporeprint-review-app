@@ -11,6 +11,8 @@ declare(strict_types=1);
 // via CORS aus sporeprint.pilzling.eu, Test-Seite laedt es ein.
 
 require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/db.php';
+require_once __DIR__ . '/../lib/nav.php';
 requireLogin();
 
 $user = currentUser();
@@ -43,7 +45,6 @@ body { margin: 0; padding: 0; background: #1a1f2e; }
 <?php
 exit;
 endif;
-?>
 ?><!DOCTYPE html>
 <html lang="de">
 <head>
@@ -55,17 +56,7 @@ endif;
 </head>
 <body>
 
-<header class="app-header">
-    <a href="/dashboard.php" class="app-header__brand">Sporeprint</a>
-    <nav class="app-header__nav">
-        <a href="/dashboard.php">Dashboard</a>
-        <a href="/widget-test.php" class="is-active">Widget-Vorschau</a>
-    </nav>
-    <div class="app-header__user">
-        <span><?= htmlspecialchars($user ?? '') ?></span>
-        <a href="/logout.php">Logout</a>
-    </div>
-</header>
+<?php renderAppHeader('widget-test'); ?>
 
 <main class="app-main">
     <div class="page-header">

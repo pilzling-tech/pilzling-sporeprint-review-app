@@ -249,6 +249,36 @@ input.is-invalid:focus {
     box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.15);
 }
 
+/* === Color-Input-Group (Picker + Hex-Input + Swatch) === */
+.color-input-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+.color-input-group input[type="color"] {
+    width: 50px;
+    height: 38px;
+    padding: 2px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    background: var(--color-white);
+    flex-shrink: 0;
+}
+.color-input-group input[type="text"] {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+}
+.color-swatch {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
 /* === Form-Actions (Submit / Cancel) === */
 
 .form-actions {

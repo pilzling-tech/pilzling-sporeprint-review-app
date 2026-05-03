@@ -11,6 +11,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../lib/auth.php';
 require_once __DIR__ . '/../lib/db.php';
 require_once __DIR__ . '/../lib/helpers.php';
+require_once __DIR__ . '/../lib/nav.php';
 
 requireLogin();
 
@@ -169,23 +170,7 @@ $csrfToken = csrfToken();
 </head>
 <body>
 
-<header class="app-header">
-    <a href="/dashboard.php" class="app-header__brand">Sporeprint</a>
-    <nav class="app-header__nav">
-        <a href="/dashboard.php">Dashboard</a>
-        <a href="/reviews.php">Reviews</a>
-        <a href="/replies.php">Antworten</a>
-        <a href="/analytics.php">Analytics</a>
-        <a href="/widget-config.php">Widget</a>
-        <a href="/qr.php">QR &amp; Link</a>
-        <a href="/shops.php" class="is-active">Shops</a>
-    </nav>
-    <div class="app-header__user">
-        <span class="text-muted">Shop: <strong><?= htmlspecialchars($activeShop) ?></strong></span>
-        <span><?= htmlspecialchars($user ?? '') ?></span>
-        <a href="/logout.php">Logout</a>
-    </div>
-</header>
+<?php renderAppHeader('shops'); ?>
 
 <main class="app-main">
 
@@ -243,14 +228,28 @@ $csrfToken = csrfToken();
             <h3>Corporate Identity</h3>
 
             <div class="form-row">
-                <label for="ci_primary">CI Primary (Hex)</label>
-                <input type="text" id="ci_primary" name="ci_primary" value="<?= htmlspecialchars($editShop['ci_primary'] ?? '') ?>" placeholder="#F85B05" pattern="^#[0-9a-fA-F]{3,8}$">
+                <label for="ci_primary">CI Primary</label>
+                <div class="color-input-group">
+                    <input type="color" id="ci_primary_picker" value="<?= htmlspecialchars($editShop['ci_primary'] ?: '#F85B05') ?>"
+                           oninput="document.getElementById('ci_primary').value = this.value; document.getElementById('ci_primary_swatch').style.background = this.value">
+                    <input type="text" id="ci_primary" name="ci_primary" value="<?= htmlspecialchars($editShop['ci_primary'] ?? '') ?>"
+                           placeholder="#F85B05" pattern="^#[0-9a-fA-F]{3,8}$"
+                           oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value)){document.getElementById('ci_primary_picker').value=this.value; document.getElementById('ci_primary_swatch').style.background=this.value}">
+                    <span id="ci_primary_swatch" class="color-swatch" style="background: <?= htmlspecialchars($editShop['ci_primary'] ?: 'transparent') ?>"></span>
+                </div>
                 <p class="form-help">Wird im Widget als Akzent-Farbe genutzt (Sporen-Rating, CTAs). Override via Widget-Konfigurator möglich.</p>
             </div>
 
             <div class="form-row">
-                <label for="ci_secondary">CI Secondary (Hex)</label>
-                <input type="text" id="ci_secondary" name="ci_secondary" value="<?= htmlspecialchars($editShop['ci_secondary'] ?? '') ?>" placeholder="#7a4f1a" pattern="^#[0-9a-fA-F]{3,8}$">
+                <label for="ci_secondary">CI Secondary</label>
+                <div class="color-input-group">
+                    <input type="color" id="ci_secondary_picker" value="<?= htmlspecialchars($editShop['ci_secondary'] ?: '#7a4f1a') ?>"
+                           oninput="document.getElementById('ci_secondary').value = this.value; document.getElementById('ci_secondary_swatch').style.background = this.value">
+                    <input type="text" id="ci_secondary" name="ci_secondary" value="<?= htmlspecialchars($editShop['ci_secondary'] ?? '') ?>"
+                           placeholder="#7a4f1a" pattern="^#[0-9a-fA-F]{3,8}$"
+                           oninput="if(/^#[0-9a-fA-F]{6}$/.test(this.value)){document.getElementById('ci_secondary_picker').value=this.value; document.getElementById('ci_secondary_swatch').style.background=this.value}">
+                    <span id="ci_secondary_swatch" class="color-swatch" style="background: <?= htmlspecialchars($editShop['ci_secondary'] ?: 'transparent') ?>"></span>
+                </div>
             </div>
 
             <hr>

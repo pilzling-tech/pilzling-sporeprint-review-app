@@ -10,6 +10,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../lib/auth.php';
 require_once __DIR__ . '/../lib/db.php';
 require_once __DIR__ . '/../lib/helpers.php';
+require_once __DIR__ . '/../lib/nav.php';
 
 requireLogin();
 
@@ -162,24 +163,7 @@ $csrfToken = csrfToken();
 </head>
 <body>
 
-<header class="app-header">
-    <a href="/dashboard.php" class="app-header__brand">Sporeprint</a>
-    <nav class="app-header__nav">
-        <a href="/dashboard.php">Dashboard</a>
-        <a href="/reviews.php">Reviews</a>
-        <a href="/replies.php">Antworten</a>
-        <a href="/analytics.php">Analytics</a>
-        <a href="/widget-config.php">Widget</a>
-        <a href="/qr.php">QR &amp; Link</a>
-        <a href="/shops.php">Shops</a>
-        <a href="/settings.php" class="is-active">Einstellungen</a>
-    </nav>
-    <div class="app-header__user">
-        <span class="text-muted">Shop: <strong><?= htmlspecialchars($activeShop) ?></strong></span>
-        <span><?= htmlspecialchars($user ?? '') ?></span>
-        <a href="/logout.php">Logout</a>
-    </div>
-</header>
+<?php renderAppHeader('settings'); ?>
 
 <main class="app-main">
     <div class="page-header">

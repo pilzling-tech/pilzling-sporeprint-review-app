@@ -10,6 +10,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../lib/auth.php';
 require_once __DIR__ . '/../lib/db.php';
 require_once __DIR__ . '/../lib/helpers.php';
+require_once __DIR__ . '/../lib/nav.php';
 
 requireLogin();
 
@@ -157,22 +158,7 @@ $csrfToken = csrfToken();
 </head>
 <body>
 
-<header class="app-header">
-    <a href="/dashboard.php" class="app-header__brand">Sporeprint</a>
-    <nav class="app-header__nav">
-        <a href="/dashboard.php">Dashboard</a>
-        <a href="/reviews.php">Reviews</a>
-        <a href="/replies.php">Antworten</a>
-        <a href="/analytics.php">Analytics</a>
-        <a href="/widget-config.php" class="is-active">Widget</a>
-        <a href="/widget-test.php">Widget-Vorschau</a>
-    </nav>
-    <div class="app-header__user">
-        <span class="text-muted">Shop: <strong><?= htmlspecialchars($activeShop) ?></strong></span>
-        <span><?= htmlspecialchars($user ?? '') ?></span>
-        <a href="/logout.php">Logout</a>
-    </div>
-</header>
+<?php renderAppHeader('widget-config'); ?>
 
 <main class="app-main">
     <div class="page-header">
@@ -231,7 +217,14 @@ $csrfToken = csrfToken();
             <hr>
 
             <h2>Theme-Overrides</h2>
-            <p class="text-muted text-sm mb-4">Pro Shop eigene Akzent-Farbe wenn die CI-Default-Farbe (<code style="font-size:0.75rem;color:<?= htmlspecialchars($config['ci_primary']) ?>;font-weight:600"><?= htmlspecialchars($config['ci_primary']) ?></code>) nicht passt. Leer lassen = automatisches Mapping aus CI.</p>
+            <?php $ciPrimaryDisplay = $config['ci_primary'] ?: '#F85B05'; ?>
+            <p class="text-muted text-sm mb-4">
+                Pro Shop eigene Akzent-Farbe — überschreibt das automatische Mapping aus
+                <code>shops.ci_primary</code>.
+                Default-CI: <span style="display:inline-block;vertical-align:middle;width:14px;height:14px;border-radius:3px;border:1px solid var(--color-border);background:<?= htmlspecialchars($ciPrimaryDisplay) ?>"></span>
+                <code><?= htmlspecialchars($ciPrimaryDisplay) ?></code>.
+                Leer lassen = automatisches Mapping aus CI.
+            </p>
 
             <?php foreach ([
                 ['accent', 'Akzent-Farbe (Sporen, CTAs, Links)'],
