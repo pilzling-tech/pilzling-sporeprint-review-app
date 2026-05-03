@@ -1,8 +1,0 @@
-# Helper-Code kommt in Phase 1 (Backend-Implementation):
-#   - db.php             ← PDO-Singleton (Pattern aus production-app A1)
-#   - auth.php           ← Single-Admin-Login + requireLogin() (A6, vereinfacht)
-#   - public_api_guard.php  ← enforcePublicApiHardening() (Sporeprint-Erstwerk)
-#   - helpers.php        ← apiSuccess/apiError/jsonResponse (A3, A4)
-#   - rate_limit.php     ← Sliding-Window Token-Counter
-#   - api_clients/google.php
-#   - api_clients/trustpilot.php
