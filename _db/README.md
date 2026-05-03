@@ -1,16 +1,17 @@
 # Sporeprint-Datenbank — Schemas & Migrations
 
-**⚠ Die DB `pilzling_reviews_app` ist die SSOT fuer alle Reviews. Jede Aenderung mit Vorsicht.**
+**⚠ Die DB `pilzling_reviews_app` ist die SSOT für alle Reviews. Jede Änderung mit Vorsicht.**
 
-Konvention uebernommen aus production-app `_db/README.md` (Pre-Check A8), an Sporeprint-DB-Namen angepasst.
+Konvention übernommen aus production-app `_db/README.md` (Pre-Check A8), an Sporeprint-DB-Namen angepasst.
 
 ---
 
-## Schema-Versionen (chronologisch, NICHT ueberschneidend)
+## Schema-Versionen (chronologisch, NICHT überschneidend)
 
 | Version | Datei | Zweck | Betrifft |
 |---------|-------|-------|----------|
 | v1 | `schema_v1.sql` | Initial: 6 Tabellen + 3 Shops + 3 Widget-Configs | shops, reviews, review_replies, sync_runs, widget_configs, rate_limits |
+| v2 | `schema_v2.sql` | Pilzling-Go-Live-Vorbereitung (Theme-Overrides, Bewertungs-Landing-Page-Felder, Notification-Emails) | widget_configs (+1 Spalte), shops (+4 Spalten), notification_emails (neue Tabelle) |
 
 ---
 
@@ -72,4 +73,6 @@ Wird nicht hier im Git versioniert — liegt im lokalen Workspace oder auf NAS.
 
 ## Aktueller Stand
 
-**Letzte angewandte Migration:** noch keine — `schema_v1.sql` ist Initial-Migration und wird im Rahmen von Phase 0 Foundation eingespielt.
+**Letzte angewandte Migration:** v1 (am 2026-05-02 eingespielt — bestätigt durch User).
+
+**Pending zur Ausführung:** v2 (`schema_v2.sql`) — wartet auf User-Einspielung via phpMyAdmin. Beinhaltet ALTER TABLE auf `widget_configs` und `shops` plus CREATE TABLE für `notification_emails`. Wird gebraucht damit Phase-3-Admin-Pages (Widget-Konfigurator, Bewertungslink, Settings) funktionieren.
