@@ -212,11 +212,25 @@
     letter-spacing: 0.05em;
 }
 .sporeprint-widget__footer {
-    text-align: center;
-    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 11px;
     color: var(--sp-light-60);
     letter-spacing: 0.05em;
+}
+.sporeprint-widget__footer-icon {
+    width: 12px;
+    height: 12px;
+    color: var(--sp-light-60);
+    flex-shrink: 0;
+}
+.sporeprint-widget__footer-icon-filled {
+    color: var(--sp-accent);
 }
 .sporeprint-widget__footer a {
     color: inherit;
@@ -374,13 +388,25 @@
 
         const footer = document.createElement('div');
         footer.className = 'sporeprint-widget__footer';
+
+        // Mini-Sporen-Icon links vom Brand-Text — gleicher Sporenabdruck-Stil
+        // wie die Rating-Sporen, im kleineren Format.
+        footer.insertAdjacentHTML(
+            'beforeend',
+            SPORE_SVG.replace(
+                'class="sporeprint-card__spore"',
+                'class="sporeprint-widget__footer-icon sporeprint-widget__footer-icon-filled"'
+            )
+        );
+
         const link = document.createElement('a');
         link.href = 'https://sporeprint.pilzling.eu/';
         link.target = '_blank';
         link.rel = 'noopener';
-        link.title = 'Sporeprint — der Sporenabdruck einer Marke. Reviews als unverfälschter Abdruck der Kund:innen-Erfahrung.';
+        link.title = 'Sporeprint — wie der Sporenabdruck einen Pilz eindeutig identifiziert, machen Bewertungen die wahre Identität einer Marke sichtbar.';
         link.textContent = 'powered by Sporeprint';
         footer.appendChild(link);
+
         container.appendChild(footer);
     }
 
