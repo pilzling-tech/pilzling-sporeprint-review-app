@@ -475,7 +475,7 @@ In Tabellen: **TT.MM.JJJJ** rechtsbündig (Klasse `.col-datum`). Mit Uhrzeit nur
 </article>
 ```
 
-**Stub-Variante** (für Phase-3-Vorab-Karten):
+**Stub-Variante** (für Phase-3-Vorab-Karten — eigenständige Card auf Canvas):
 
 ```html
 <article class="card card--stub">
@@ -484,7 +484,37 @@ In Tabellen: **TT.MM.JJJJ** rechtsbündig (Klasse `.col-datum`). Mit Uhrzeit nur
 </article>
 ```
 
-`card--stub` → gestrichelter Border, Cream-Background, automatisches "Phase 3 — kommt"-Badge unten rechts.
+`card--stub` → gestrichelter Border, Cream-Background, automatischer italic muted "Kommt in Phase 3"-Marker unten.
+
+### Card als Section-Wrapper (für Sub-Inhalte mit Grid)
+
+**Wann:** Mehrere zusammengehörige Sub-Items werden in einem Section-Block gruppiert. Statt jedes Item zu einer eigenen Card zu machen (Card-in-Card-Verschachtelung mit doppeltem Border/Shadow): die ganze Section wird zur `.card`, die Sub-Items werden zu `.tile`-Komponenten innen.
+
+```html
+<section class="card">
+    <header class="card__header">
+        <h2>Funktions-Bereiche</h2>
+    </header>
+    <div class="grid grid--2">
+        <article class="tile tile--stub">
+            <h3>Reviews-Übersicht</h3>
+            <p>Filter nach Plattform, Shop, …</p>
+        </article>
+        <article class="tile tile--stub">
+            <h3>Antworten verwalten</h3>
+            <p>Reply auf Google / Trustpilot …</p>
+        </article>
+        <!-- weitere Tiles -->
+    </div>
+</section>
+```
+
+**Tile-Eigenschaften:**
+- Cream-Background statt weiß (visuelle Hierarchie: Card-weiß außen, Tile-cream innen)
+- 1px Border, kein Shadow (im Gegensatz zur Card mit `--shadow-card`)
+- `.tile--stub` analog `.card--stub` — gestrichelter Border + italic muted "Kommt in Phase 3"-Marker
+
+**Anti-Pattern:** Niemals `.card .card` direkt verschachtelt — verdoppelt visuelle Schwere und wirkt unruhig. Wenn doppelte Schichtung nötig: äußere Schicht ist Card mit `__header`, innere Items sind Tiles.
 
 ## 8. Layout
 
