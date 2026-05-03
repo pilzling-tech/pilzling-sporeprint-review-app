@@ -70,35 +70,35 @@ $lastSync = dbQueryOne(
         </ul>
     </section>
 
-    <section class="card">
-        <header class="card__header">
+    <section class="section">
+        <div class="subsection-header">
             <h2>Funktions-Bereiche</h2>
-        </header>
+        </div>
 
         <div class="grid grid--2">
-            <article class="tile tile--stub">
+            <article class="card card--stub">
                 <h3>Reviews-Übersicht</h3>
-                <p>Filter nach Plattform, Shop, Sternanzahl, Datum. Direkt aus der Liste antworten.</p>
+                <p class="text-muted">Filter nach Plattform, Shop, Sternanzahl, Datum. Direkt aus der Liste antworten.</p>
             </article>
-            <article class="tile tile--stub">
+            <article class="card card--stub">
                 <h3>Antworten verwalten</h3>
-                <p>Reply auf Google / Trustpilot per API zurückpushen. Status-Tracking pro Antwort.</p>
+                <p class="text-muted">Reply auf Google / Trustpilot per API zurückpushen. Status-Tracking pro Antwort.</p>
             </article>
-            <article class="tile tile--stub">
+            <article class="card card--stub">
                 <h3>Analytics</h3>
-                <p>Wachstumsgraph, Funnel, Durchschnitt pro Plattform und Shop.</p>
+                <p class="text-muted">Wachstumsgraph, Funnel, Durchschnitt pro Plattform und Shop.</p>
             </article>
-            <article class="tile tile--stub">
+            <article class="card card--stub">
                 <h3>Widget-Konfigurator</h3>
-                <p>Layout, Filter (min Sterne, max Items), Custom-CSS pro Shop.</p>
+                <p class="text-muted">Layout, Filter (min Sterne, max Items), Custom-CSS pro Shop.</p>
             </article>
-            <article class="tile tile--stub">
+            <article class="card card--stub">
                 <h3>QR-Code-Generator</h3>
-                <p>QR-Codes für Verpackung, Marktstand, etc. — führen direkt zur Bewertungsseite.</p>
+                <p class="text-muted">QR-Codes für Verpackung, Marktstand, etc. — führen direkt zur Bewertungsseite.</p>
             </article>
-            <article class="tile tile--stub">
+            <article class="card card--stub">
                 <h3>Shop-Switcher</h3>
-                <p>Pilzling / Pilzwald / Shroom Boom — alles in einer Oberfläche, Multi-Tenant.</p>
+                <p class="text-muted">Pilzling / Pilzwald / Shroom Boom — alles in einer Oberfläche, Multi-Tenant.</p>
             </article>
         </div>
     </section>

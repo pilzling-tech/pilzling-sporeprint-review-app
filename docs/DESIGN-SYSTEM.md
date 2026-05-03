@@ -486,6 +486,17 @@ In Tabellen: **TT.MM.JJJJ** rechtsbündig (Klasse `.col-datum`). Mit Uhrzeit nur
 
 `card--stub` → gestrichelter Border, Cream-Background, automatischer italic muted "Kommt in Phase 3"-Marker unten.
 
+### Card-Layout-Entscheidung — eigenständig vs. Wrapper
+
+Zwei Patterns je nach Inhalt:
+
+| Pattern | Wann |
+|---------|------|
+| **Eigenständige Cards** (`.card` direkt im Section-Container, mit `subsection-header` als Section-Titel) | Übersichts-/Hub-Karten die jeweils einen eigenen Funktions-Bereich darstellen — z.B. Dashboard-Funktions-Übersicht, Settings-Bereiche. Jede Karte ist visuell eigenständig. |
+| **Card-Wrapper mit Tiles drin** | Statistik-Sektionen, Sub-Dashboards mit zusammengehörigen Mini-Items (z.B. "Heute / Diese Woche / Diesen Monat" als Tiles innerhalb einer Stats-Card). Hier wäre Card-in-Card visuell zu schwer. |
+
+**Standardfall ist eigenständige Cards** — der Wrapper-Pattern kommt nur wenn die Sub-Items so klein sind, dass sie eigene Cards optisch dominieren würden.
+
 ### Card als Section-Wrapper (für Sub-Inhalte mit Grid)
 
 **Wann:** Mehrere zusammengehörige Sub-Items werden in einem Section-Block gruppiert. Statt jedes Item zu einer eigenen Card zu machen (Card-in-Card-Verschachtelung mit doppeltem Border/Shadow): die ganze Section wird zur `.card`, die Sub-Items werden zu `.tile`-Komponenten innen.
