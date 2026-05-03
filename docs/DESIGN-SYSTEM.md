@@ -583,6 +583,198 @@ Spezial-Komponente für Foundation-Stand-Anzeige (aktuell nur auf Dashboard). It
 </section>
 ```
 
+## 12. Reference-Implementation (Copy-Vorlagen für neue Pages)
+
+Drei Skelette zum 1:1-Kopieren wenn eine neue Page angelegt wird. **Niemals von Null anfangen** — immer von einer dieser Vorlagen aus.
+
+### 12.1 Standard-Admin-Page (mit Login + App-Header)
+
+```php
+<?php
+declare(strict_types=1);
+
+// Sporeprint Admin — <Page-Beschreibung>.
+// <Was diese Page macht — 1-2 Sätze>
+
+require_once __DIR__ . '/../lib/auth.php';
+require_once __DIR__ . '/../lib/db.php';
+require_once __DIR__ . '/../lib/helpers.php';
+
+requireLogin();
+
+$user = currentUser();
+
+// === Daten laden ===
+// $rows = dbQueryAll("SELECT ...");
+
+?><!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Sporeprint Admin — <Page-Titel></title>
+<link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+
+<header class="app-header">
+    <a href="/dashboard.php" class="app-header__brand">Sporeprint</a>
+    <nav class="app-header__nav">
+        <a href="/dashboard.php">Dashboard</a>
+        <a href="/<aktuelle-page>.php" class="is-active"><Nav-Label></a>
+    </nav>
+    <div class="app-header__user">
+        <span><?= htmlspecialchars($user ?? '') ?></span>
+        <a href="/logout.php">Logout</a>
+    </div>
+</header>
+
+<main class="app-main">
+    <div class="page-header">
+        <h1><Page-Titel></h1>
+        <div class="page-header__actions">
+            <!-- optional: Action-Buttons rechts oben -->
+            <button class="btn-secondary btn--sm">Sekundär-Aktion</button>
+            <button class="btn-primary btn--sm">Haupt-Aktion</button>
+        </div>
+    </div>
+
+    <!-- Page-Inhalt: nur Standard-Komponenten aus components.css nutzen.
+         Niemals <style> Inline-Block, niemals style="..."-Attribute. -->
+
+    <section class="section">
+        <div class="subsection-header">
+            <h2>Sektion-Titel</h2>
+        </div>
+        <!-- .card / .data-table / .callout / etc. -->
+    </section>
+
+</main>
+
+</body>
+</html>
+```
+
+**Pflicht-Checks für neue Page:**
+- `requireLogin();` als allererste Zeile nach den `require_once`-Aufrufen
+- `<title>` enthält "Sporeprint Admin" + Page-Bezeichnung
+- `<meta name="robots" content="noindex, nofollow">` (Admin nie indexiert)
+- `<link rel="stylesheet" href="/assets/admin.css">` als einziges Stylesheet
+- Nav-Eintrag mit `is-active` für die aktuelle Page
+- Alle UI-Strings mit Umlauten
+
+### 12.2 Login-Page (zentriertes Layout, kein App-Header)
+
+```php
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../lib/auth.php';
+
+if (currentUser() !== null) {
+    header('Location: /dashboard.php');
+    exit;
+}
+
+// ... Login-Logik mit CSRF-Check ...
+
+?><!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Sporeprint Admin — Login</title>
+<link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body class="login-page">
+
+<main class="login-card">
+    <h1 class="login-card__brand">Sporeprint</h1>
+    <p class="login-card__subtitle">Admin-Bereich</p>
+
+    <!-- Optional: Error-Callout -->
+    <div class="callout callout--error">…</div>
+
+    <form method="post" autocomplete="off">
+        <input type="hidden" name="csrf_token" value="…">
+
+        <div class="form-row">
+            <label for="username">Benutzername</label>
+            <input type="text" id="username" name="username" autofocus required>
+        </div>
+
+        <div class="form-row">
+            <label for="password">Passwort</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary btn--block">Einloggen</button>
+        </div>
+    </form>
+
+    <p class="login-card__footer">Sporeprint &middot; intern</p>
+</main>
+
+</body>
+</html>
+```
+
+**Charakteristisch:** `<body class="login-page">` (zentriertes Cream-BG-Layout statt App-Header), `.login-card` als Container.
+
+### 12.3 Public-Stub (sporeprint.pilzling.eu/)
+
+```php
+<?php
+declare(strict_types=1);
+
+// Sporeprint Public — Platzhalter-Index.
+
+http_response_code(200);
+header('Content-Type: text/html; charset=utf-8');
+?>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Sporeprint</title>
+<style>
+/* === PUBLIC-STUB INLINE-CSS — bewusst kein Cross-Subdomain-Asset-Sharing ===
+ * Bei Änderungen in admin/assets/tokens.css die hier genutzten Werte
+ * manuell nachziehen. Public-Stub wird selten geändert.
+ */
+body {
+    font-family: "Rubik", system-ui, sans-serif;
+    background: #F2F0ED;       /* --color-cream */
+    color: #151824;            /* --color-dark */
+    /* ... weitere Tokens 1:1 aus tokens.css ... */
+}
+</style>
+</head>
+<body>
+<h1>Sporeprint</h1>
+<!-- minimaler Content -->
+</body>
+</html>
+```
+
+**Charakteristisch:** Inline-CSS (nicht aus `admin.css` weil andere Subdomain), aber Werte exakt aus `tokens.css` kopiert mit Sync-Pflicht-Kommentar.
+
+### Anti-Patterns (NIEMALS machen)
+
+- ❌ Inline-`<style>`-Block in einer Admin-Page (außer Login? **Auch da nicht**, ist `.login-card` in `layout.css`)
+- ❌ `style="..."`-Attribute irgendwo
+- ❌ Eigene page-spezifische CSS-Datei (z.B. `admin/dashboard.css`) — alles in `components.css`
+- ❌ Hardcoded Farb-Hex-Werte oder Pixel-Spacings in Admin-PHP — immer `var(--token)`
+- ❌ Endpoint ohne `requireLogin()` als allererste Zeile (Admin) bzw. `enforcePublicApiHardening()` (Public)
+- ❌ HTML-Output mit ASCII-Substitutionen (`fuer`, `moeglich`, etc.) — siehe Sektion 5b
+
+### Wenn die Vorlagen nicht reichen
+
+Wenn eine neue Page-Art entsteht die in keinem der drei Skelette passt (z.B. Print-View, Embed-Iframe, Admin-Modal-Lightbox): **erst überlegen ob das System sie wirklich braucht**, dann das Skelett **hier in DESIGN-SYSTEM.md ergänzen** als 12.4 — bevor der Code geschrieben wird. Doku-First.
+
 ## Was kommt später (Phase 3+)
 
 - **Modal-Framework** — wenn Reply-Funktion gebaut wird (POST-Modale, Form-Edit-Pattern)
