@@ -174,7 +174,14 @@ Volle Doku + Erkennungs-Greps: `docs/DESIGN-SYSTEM.md` Sektion 2b.
 
 **Umlaut-Pflicht (hart erzwungen via Pre-Commit-Hook `_tools/check_umlauts.py`):**
 
-In allen `.md`-Dateien, PHP-Strings (Echo, HTML, Errors), JS-Strings (UI-Text), Code-Kommentaren und Commit-Messages müssen deutsche Umlaute korrekt geschrieben werden — niemals ASCII-Substitution wie `Aenderung`, `fuer`, `moeglich`, `ueber`, `Stueck`. **Einzige Ausnahme:** Code-Variablennamen, Funktionsnamen, Datei-/Ordnernamen, DB-Spalten (dort ASCII).
+Eindeutiger Test für Grenzfälle: **Wenn der Text theoretisch von einem Menschen gelesen werden könnte → Umlaute. Wenn der Text als String vom System interpretiert wird (Code-Identifier, URL, Datei-Name) → ASCII.**
+
+| Kategorie | Schreibweise | Beispiele |
+|-----------|--------------|-----------|
+| **ASCII (technische Identifier)** | nur a-z, 0-9, `_`, `-` | PHP-Variablen (`$user_name`), Funktionen (`getReviewsForShop`), DB-Tabellen/-Spalten (`reviews.created_at`), Datei-/Ordnernamen (`api_clients/`), CSS-Klassen (`.btn-primary`), HTTP-Header (`X-Cron-Token`), ENV-Variablen (`DB_USER`), JSON-Keys (`{"product_name": ...}`), URL-Parameter (`?shop=pilzling`) |
+| **Umlaute (alles andere)** | `äöüÄÖÜß` korrekt | HTML-Output (`echo "Bewertung gepostet"`), UI-Labels (`<button>Speichern</button>`), Form-Placeholder (`placeholder="Suche…"`), Error-Messages (`apiError("Bestellung nicht gefunden")`), HTML-Title/Meta, Toast-Texte, **Code-Kommentare** (`// Diese Funktion prüft …`), Doku (`.md`-Files), Commit-Messages, Plan-Files |
+
+**Niemals** ASCII-Substitutionen wie `Aenderung`, `fuer`, `moeglich`, `ueber`, `Stueck`, `Pruefung`, `gehoert`, `naechst`, `koennen`, `muessen`, `fuehren`, `oeffnen`, `Schluessel`, `Stueck`, `vollstaend`. Substitutions-Tabelle vollständig in `docs/DESIGN-SYSTEM.md` Sektion 5b.
 
 **Genderneutrale Sprache:** Im Zweifel `:innen-Form` (`Kund:innen`, `Bewerter:innen`). Niemals nur männliche Form außer bei konkret bekannter Person.
 

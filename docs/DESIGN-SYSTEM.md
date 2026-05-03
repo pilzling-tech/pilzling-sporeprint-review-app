@@ -267,22 +267,52 @@ UI-Strings, Doku, Commit-Messages — überall gilt:
 
 ### Umlaut-Pflicht (hart)
 
-In **allen** `.md`-Dateien, PHP-Strings (Echo, HTML-Inhalt, Error-Messages), JS-Strings (UI-Text), Code-Kommentaren und Commit-Messages müssen deutsche Umlaute korrekt geschrieben werden — niemals ASCII-Substitution wie `Aenderung`, `fuer`, `moeglich`, `ueber`.
+**Eindeutiger Test für Grenzfälle:** Wenn der Text theoretisch von einem Menschen gelesen werden könnte → Umlaute. Wenn der Text als String vom System interpretiert wird (Code-Identifier, URL, Datei-Name) → ASCII.
+
+| Kategorie | Schreibweise | Beispiele |
+|-----------|--------------|-----------|
+| **ASCII (technische Identifier)** | nur a-z, 0-9, `_`, `-` | PHP-Variablen, Funktionen, DB-Tabellen/-Spalten, Datei-/Ordnernamen, CSS-Klassen, HTTP-Header, ENV-Variablen, JSON-Keys, URL-Parameter |
+| **Umlaute (alles andere, kein Kompromiss)** | `äöüÄÖÜß` korrekt | HTML-Output, UI-Labels, Form-Placeholder, Error-Messages, HTML-Title, Toast-Texte, Code-Kommentare, Doku-Files, Commit-Messages, Plan-Files |
+
+### Substitutions-Tabelle (häufige Fehler — niemals so schreiben)
 
 | Falsch | Richtig |
 |--------|---------|
 | `fuer` | `für` |
-| `Aenderung` | `Änderung` |
-| `moeglich` | `möglich` |
-| `naechst` | `nächst` |
-| `Stueck` | `Stück` |
-| `ueber` | `über` |
-| `oeffnen` | `öffnen` |
+| `ueber`, `ueberall`, `ueberhaupt` | `über`, `überall`, `überhaupt` |
+| `Aenderung`, `aendern`, `geaendert` | `Änderung`, `ändern`, `geändert` |
+| `moeglich`, `unmoeglich` | `möglich`, `unmöglich` |
+| `naechst`, `naechste` | `nächst`, `nächste` |
+| `Stueck`, `Stueckzahl` | `Stück`, `Stückzahl` |
+| `oeffnen`, `geoeffnet` | `öffnen`, `geöffnet` |
 | `Schluessel` | `Schlüssel` |
+| `gehoert`, `gehoeren` | `gehört`, `gehören` |
+| `muessen`, `muesste` | `müssen`, `müsste` |
+| `koennen`, `koennte` | `können`, `könnte` |
+| `duerfen`, `duerfte` | `dürfen`, `dürfte` |
+| `haetten`, `haette` | `hätten`, `hätte` |
+| `Pruefung`, `pruefen`, `geprueft` | `Prüfung`, `prüfen`, `geprüft` |
+| `fuehrt`, `fuehren`, `gefuehrt` | `führt`, `führen`, `geführt` |
+| `haeufig` | `häufig` |
+| `ausfuehrlich`, `ausfuehren` | `ausführlich`, `ausführen` |
+| `waehrend` | `während` |
+| `waehlen`, `gewaehlt` | `wählen`, `gewählt` |
+| `erklaeren`, `erklaert` | `erklären`, `erklärt` |
+| `ergaenzen`, `ergaenzt` | `ergänzen`, `ergänzt` |
+| `vollstaendig` | `vollständig` |
+| `Loeschen`, `loescht` | `Löschen`, `löscht` |
+| `Ruecksprache` | `Rücksprache` |
+| `zurueck` | `zurück` |
+| `ungefaehr` | `ungefähr` |
+| `gemaess` | `gemäß` |
+| `verfuegbar` | `verfügbar` |
+| `nuetzlich` | `nützlich` |
+| `noetig` | `nötig` |
+| `ungueltig` | `ungültig` |
+| `spaeter`, `spaet` | `später`, `spät` |
+| `Kraeuter` | `Kräuter` |
 
-**Einzige Ausnahme:** Code-Variablennamen, Funktionsnamen, Datei-/Ordnernamen, DB-Spalten — dort ASCII (sonst PHP/SQL-/Encoding-Probleme).
-
-**Erzwingung:** Pre-Commit-Hook in `_tools/check_umlauts.py` prüft staged `.md`-Files + Commit-Messages gegen `_tools/umlauts-patterns.txt`. Allowlist in `_tools/umlauts-allowlist.txt` für Eigennamen die zufällig wie ASCII-Substitution aussehen (z.B. "Bauer", "Goethe").
+**Erzwingung:** Pre-Commit-Hook in `_tools/check_umlauts.py` prüft staged `.md`-Files + Commit-Messages gegen `_tools/umlauts-patterns.txt`. Allowlist in `_tools/umlauts-allowlist.txt` für Eigennamen die zufällig wie ASCII-Substitution aussehen (z.B. "Bauer", "Goethe", "Boeing").
 
 ### Genderneutrale Sprache
 
