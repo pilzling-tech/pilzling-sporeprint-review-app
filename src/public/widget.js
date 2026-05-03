@@ -28,16 +28,46 @@
     }
 
     // === Mock-Shop-Configs (Phase 2a) ===
-    // In Phase 2b durch fetch('/api/shop-config?shop=...') oder
-    // shop_config-Response aus /api/reviews ersetzt — die Werte kommen aus
-    // shops.ci_primary / ci_secondary in der DB.
+    // 2-stufige Theming-Strategie:
+    //   1. Default-Mapping aus shops.ci_primary/ci_secondary
+    //   2. Optional theme_overrides aus widget_configs (manuell im
+    //      Phase-3-Konfigurator gesetzt) — ueberschreibt einzelne
+    //      CSS-Variablen punktuell wo das Default-Mapping nicht passt.
     //
-    // Pro Shop andere Akzent-Farbe (Background bleibt Pilzling-Dark fuer
-    // Konsistenz im Marken-Dachdesign).
+    // In Phase 2b durch fetch('/api/shop-config?shop=...') ersetzt. Die
+    // Override-Struktur erlaubt es im Konfigurator-UI pro Shop einzelne
+    // Sektions-Farben getrennt zu pflegen ohne Schema-Migrations.
+    //
+    // Background bleibt Pilzling-Dark fuer Konsistenz im Marken-Dach.
     const MOCK_SHOP_CONFIGS = {
-        'pilzling':    { ci_primary: '#F85B05', ci_secondary: '#7a4f1a', name: 'Pilzling' },
-        'pilzwald':    { ci_primary: '#89B455', ci_secondary: '#507227', name: 'Pilzwald' },
-        'shroom-boom': { ci_primary: '#C87449', ci_secondary: '#FFD8C2', name: 'Shroom Boom' },
+        'pilzling': {
+            ci_primary: '#F85B05',
+            ci_secondary: '#7a4f1a',
+            name: 'Pilzling',
+            theme_overrides: null, // Beispiel: keine Overrides → reines Default
+        },
+        'pilzwald': {
+            ci_primary: '#89B455',
+            ci_secondary: '#507227',
+            name: 'Pilzwald',
+            theme_overrides: null,
+        },
+        'shroom-boom': {
+            ci_primary: '#C87449',
+            ci_secondary: '#FFD8C2',
+            name: 'Shroom Boom',
+            theme_overrides: null,
+        },
+    };
+
+    // Mapping von Override-Keys zu CSS-Variablen-Namen.
+    // Erweiterbar wenn Konfigurator weitere Overrides anbietet.
+    const THEME_OVERRIDE_MAP = {
+        'accent':           '--sp-accent',
+        'accent_soft':      '--sp-accent-soft',
+        'background':       '--sp-bg',
+        'card_background':  '--sp-card',
+        'rating_filled':    '--sp-accent', // Alias — Sporen-Rating nutzt --sp-accent
     };
 
     // === Mock-Reviews für Phase 1. Später via fetch ersetzt. ===
@@ -338,18 +368,35 @@
 
     /**
      * Schreibt die Shop-spezifischen CI-Farben als Inline-CSS-Variablen
-     * auf den Container. Erlaubt pro Shop einen eigenen Akzent ohne
-     * separate Stylesheets.
+     * auf den Container. 2-stufig:
+     *
+     *   1. Default-Mapping: shopConfig.ci_primary  →  --sp-accent
+     *      shopConfig.ci_primary @ 15%  →  --sp-accent-soft
+     *
+     *   2. Per-Shop-Overrides: shopConfig.theme_overrides ist ein Objekt
+     *      mit Keys aus THEME_OVERRIDE_MAP (z.B. {"accent": "#3a8c1a"})
+     *      — ueberschreibt die Default-Werte gezielt. Wird vom Phase-3-
+     *      Widget-Konfigurator gepflegt; aktuell Mock = null.
      */
     function applyShopBranding(container, shopConfig) {
         if (!shopConfig) return;
+
+        // === Stufe 1: Default-Mapping aus CI-Farben ===
         if (shopConfig.ci_primary) {
             container.style.setProperty('--sp-accent', shopConfig.ci_primary);
-            // Akzent-Soft: 15% Opacity-Variante fuer dezente Hintergruende
             container.style.setProperty(
                 '--sp-accent-soft',
                 hexToRgba(shopConfig.ci_primary, 0.15)
             );
+        }
+
+        // === Stufe 2: Per-Shop-Overrides (vom Konfigurator gepflegt) ===
+        const overrides = shopConfig.theme_overrides || {};
+        for (const [key, value] of Object.entries(overrides)) {
+            const cssVar = THEME_OVERRIDE_MAP[key];
+            if (cssVar && value) {
+                container.style.setProperty(cssVar, value);
+            }
         }
     }
 

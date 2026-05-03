@@ -78,6 +78,14 @@ Im Detailplan:
 
 ---
 
+### ☐ Phase 2.5 — Widget-Konfigurator-Backend (Schema + API)
+
+**Status:** offen — kommt zwischen Phase 2 (Widget-Polish) und Phase 3 (Admin-UI). Schema-Erweiterung + GET-Endpoint, ohne Konfigurator-UI.
+
+- [ ] Migration v2: `widget_configs.theme_overrides JSON NULL` hinzufügen
+- [ ] Public-API erweitern oder neuer Endpoint `GET /api/shop-config?shop=...` der Shop-Branding-Daten ausliefert (für Widget-fetch)
+- [ ] Widget Phase-2b nutzt diese Daten statt Mock
+
 ### ☐ Phase 3 — Admin Dashboard
 
 **Status:** offen
@@ -87,7 +95,7 @@ Im Detailplan:
 - [ ] Reply-Funktion: Antwort verfassen, an Google Business Profile zurück-pushen via API
 - [ ] Visibility-Toggle pro Review (sichtbar / versteckt / geflagged)
 - [ ] Analytics-Seite: Wachstumsgraph, Funnel, Durchschnitt pro Plattform/Shop
-- [ ] Widget-Konfigurator-UI: Layout, Filter (`min_stars`, `max_items`), Custom-CSS — schreibt in `widget_configs`-Tabelle
+- [ ] Widget-Konfigurator-UI: Layout, Filter (`min_stars`, `max_items`), Custom-CSS — schreibt in `widget_configs`-Tabelle. **Plus Theme-Override-Picker:** pro Shop CSS-Variablen punktuell überschreiben (siehe ARCHITEKTUR.md "Widget-Theming-Strategie 2-stufig"). Live-Preview neben Color-Picker, "Auf Default zurücksetzen"-Button pro Override-Slot
 - [ ] QR-Code-Generator (für Verpackung, Marktstand, etc.)
 - [ ] Shop-Switcher: Pilzling / Pilzwald / Shroom Boom
 - [ ] Benachrichtigung per E-Mail bei neuen Reviews (über Brevo oder simples PHP-mail)

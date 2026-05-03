@@ -226,11 +226,45 @@ widget_configs (
   max_items            SMALLINT    NOT NULL DEFAULT 20,
   show_product_reviews TINYINT(1)  NOT NULL DEFAULT 1,
   custom_css           TEXT        NULL,
+  -- theme_overrides JSON NULL  ← geplant ab Phase 3 (Migration v2 Konfigurator)
   CONSTRAINT fk_widget_configs_shop FOREIGN KEY (shop_id) REFERENCES shops(shop_id)
 )
 ```
 
 Vom Admin-Dashboard editierbar. Public-API liest hier shop-spezifische Anzeige-Regeln.
+
+### Widget-Theming-Strategie (2-stufig)
+
+Das Widget kann pro Shop unterschiedlich aussehen. Zwei Ebenen:
+
+**Stufe 1 — Default-Mapping (automatisch):**
+
+| Quelle | Ziel-CSS-Variable | Wirkung |
+|--------|-------------------|---------|
+| `shops.ci_primary` | `--sp-accent` | Sporen-Rating (gefüllt), Footer-Hover, Header-Highlight, Produkt-Karten-Border |
+| `shops.ci_primary` @ 15% Alpha | `--sp-accent-soft` | dezente Hintergrund-Tints |
+| (Pilzling-Dark) | `--sp-bg` | Background bleibt Marken-Dach, **nicht** pro Shop |
+
+**Stufe 2 — Per-Shop-Overrides (manuell, Phase-3-Konfigurator):**
+
+`widget_configs.theme_overrides` (JSON, geplant) speichert pro Shop punktuelle Overrides:
+
+```json
+{
+    "accent": "#3a8c1a",
+    "rating_filled": "#7a4f1a"
+}
+```
+
+Mapping von Override-Keys zu CSS-Variablen ist in `widget.js` → `THEME_OVERRIDE_MAP` definiert. Erweiterbar ohne DB-Migration.
+
+**Begründung für 2-stufig statt nur Defaults:** Default-Mapping ist 80%-Lösung (CI-Primary funktioniert für Akzent). Aber manchmal sieht's nicht gut aus (z.B. wenn die CI-Farbe zu hell ist und die Sporen kaum sichtbar werden). Konfigurator erlaubt punktuelle Korrektur ohne DB-Schema oder Code-Änderung.
+
+**Phase-3-Konfigurator-UI** zeigt pro Shop:
+- Live-Preview des Widgets mit aktuellen Werten
+- Default-Werte mit "Aus CI übernommen"-Marker
+- Pro Override-Slot: Color-Picker + "Auf Default zurücksetzen"-Button
+- Speichert in `widget_configs.theme_overrides` als JSON
 
 ### Tabelle `rate_limits` — Sliding-Window-Counter
 
