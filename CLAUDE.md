@@ -78,10 +78,36 @@ Dieses Projekt folgt dem **Dev-Projekt-Standard v2.0** in `C:\AI-Workspace\refer
 Docs sind die Planungs- und Coding-SSOT. Wenn Code und Docs auseinanderdriften, entstehen Fehler. Für Feature-Arbeit erzwingt die Plan-Struktur das automatisch (Phase 0 Docs-Review + finale Verifikations-Phase). Für kleine Änderungen ohne Plan: Docs zuerst lesen → Docs aktualisieren → Code → Gegen-Check.
 
 **Besonders relevante Doku pro Änderungs-Typ:**
-- Neue API-Endpoints → `docs/ARCHITEKTUR.md`
-- Vercel-KV-Schema-Änderungen → `docs/ARCHITEKTUR.md` (Sektion Datenmodell)
-- Widget-/Admin-UI-Patterns → später `docs/DESIGN-SYSTEM.md` (wenn relevant)
+- Neue API-Endpoints → `docs/ARCHITEKTUR.md` (Endpoint-Tabelle)
+- DB-Schema-Änderungen → `_db/README.md` + `docs/ARCHITEKTUR.md` (Datenmodell-Sektion)
+- Neue `lib/`-Helper → `docs/ARCHITEKTUR.md` (lib-Inhaltsverzeichnis)
+- Widget-/Admin-UI-Patterns → später `docs/DESIGN-SYSTEM.md` (Phase 3)
 - Cron-Jobs → später `docs/CRON-JOBS.md` (wenn mehr als ein Cron läuft)
+
+### SSOT-Prinzip Code (kein Rad neu erfinden)
+
+Wenn Funktionalität bereits in `lib/` existiert, **wird sie genutzt**. Niemals zwei Helper die das gleiche tun. Konkret:
+
+- **DB-Zugriff** ausschließlich über `lib/db.php` → `getDb()`. Niemals `new PDO()` direkt im Endpoint-Code.
+- **Admin-API-Responses** ausschließlich über `lib/helpers.php` → `apiSuccess($data)` / `apiError($msg, $status)`. Niemals manuell `echo json_encode(...)` mit eigenem Envelope.
+- **Public-API-Responses** über `lib/helpers.php` → `jsonResponse($plainArray)` (ohne Envelope, pures Array für Widget).
+- **Login-Prüfung** ausschließlich über `lib/auth.php` → `requireLogin()`. Niemals lokale Session-Checks.
+- **Public-API-Härtung** ausschließlich über `lib/public_api_guard.php` → `enforcePublicApiHardening($shopId)`. Niemals einzelne Layer (CORS, Referer, Rate-Limit) lokal in einem Endpoint nachbauen.
+
+**Vor neuem Helper:** `lib/`-Inhalt durchgrep-en oder Inhaltsverzeichnis in `docs/ARCHITEKTUR.md` checken — gibt's das schon? Bei Unsicherheit: nachfragen statt parallel bauen.
+
+Wenn ein Helper über zwei Endpoints geteilt werden soll: in `lib/` extrahieren, niemals lokal duplizieren.
+
+### SSOT-Prinzip DB (keine redundanten Spalten)
+
+**Außer ID-/PK-Spalten existiert jeder Wert nur einmal.** Bei Mehrfach-Vorkommen → FK-Verweis statt Duplikat.
+
+- ✅ `reviews.shop_id` → FK auf `shops.shop_id`. Beim Lesen JOIN auf `shops` für Name/Domain
+- ❌ `reviews.shop_name` redundant zu `shops.name` — niemals
+- ❌ `review_replies.review_stars` neben `reviews.stars` — niemals
+- ✅ Polymorphe Querschnitts-Tabellen mit `entity_type` + `entity_id` wenn das gleiche Konzept für mehrere Entitäten gilt (in v1 nicht benötigt, aber Pattern-Vorlage falls später Notes/Attachments)
+
+**Vor neuer Tabelle/Spalte prüfen:** Steht der Wert oder ein abgeleiteter Wert schon woanders? Wenn ja → Verweis statt Duplikat. Drift entsteht durch Redundanz.
 
 ### Docs-Vollständigkeit (Self-Healing)
 

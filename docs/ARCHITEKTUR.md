@@ -309,10 +309,60 @@ Hinter dem Verzeichnisschutz folgt eine PHP-Login-Seite mit Single-Admin-Credent
 
 | Endpoint-Typ | Response-Format |
 |--------------|-----------------|
-| Public API (`public/api/reviews.php`) | **pures JSON-Array** der Reviews (kein Envelope) — Widget-optimiert |
-| Admin API (`admin/api/*.php`) | **`{ok: true, data: ...}`** bei Erfolg, **`{ok: false, error: "<msg>"}`** bei Fehler — Pattern aus production-app, Frontend kennt das schon |
+| Public API (`public/api/*.php`) | **pures JSON-Array** der Reviews (kein Envelope) — Widget-optimiert. Implementation: `lib/helpers.php` → `jsonResponse($plainArray)` |
+| Admin API (`admin/api/*.php`) | **`{ok: true, data: ...}`** bei Erfolg, **`{ok: false, error: "<msg>"}`** bei Fehler — Pattern aus production-app, Frontend kennt das schon. Implementation: `lib/helpers.php` → `apiSuccess($data)` / `apiError($msg, $status)` |
 
 Begründung: Public-API soll für JS-Frontends so direkt verwertbar sein wie möglich. Admin-API hat komplexere Fehler-Cases und nutzt das etablierte Envelope für konsistente Toast-Anzeige im Dashboard.
+
+## API-Endpoint-Verzeichnis
+
+Wird laufend gepflegt. Jeder neue Endpoint muss hier eingetragen werden (siehe SSOT-Prinzip in `CLAUDE.md`).
+
+### Public Endpoints (`src/public/`)
+
+| Pfad | Methode | Schutz | Zweck |
+|------|---------|--------|-------|
+| `/widget.js` | GET | keiner (statisches Asset) | Widget-Loader, embedbar im JTL-Shop |
+| `/widget-test.html` | GET | keiner | Lokale Test-Seite für widget.js |
+| `/api/reviews?shop=<id>` | GET | `enforcePublicApiHardening()` (alle 6 Layer) | Reviews-Liste für Widget, gefiltert nach `widget_configs` |
+
+### Admin Endpoints (`src/admin/`)
+
+| Pfad | Methode | Schutz | Zweck |
+|------|---------|--------|-------|
+| `/index.php` | GET, POST | keiner (Login-Form) — cPanel-Verzeichnisschutz greift davor | Login-Seite mit CSRF |
+| `/logout.php` | GET | keiner | Session zerstören, Redirect zu Login |
+| `/dashboard.php` | GET | `requireLogin()` | Admin-Übersicht (Phase 1: Layout-Stub, Phase 3: voll funktional) |
+| `/oauth/google/callback.php` | GET | keiner (OAuth-Callback) — eigene Pfad-Validierung | Google-OAuth-Redirect-Endpoint (Phase Google-API) |
+| `/api/reply.php` | POST | `requireLogin()` + CSRF | Antwort auf Review verfassen + an Quelle pushen (Phase 3) |
+
+**Konvention:** Jeder Admin-Endpoint ruft `requireLogin();` als allererste Zeile. Jeder Public-Endpoint ruft `enforcePublicApiHardening($shopId);` als allererste Zeile. Keine Ausnahmen.
+
+## lib-Verzeichnis-Inhaltsverzeichnis
+
+`src/lib/` ist die einzige Quelle für gemeinsame Funktionalität. Jeder Helper ist hier dokumentiert. Vor neuem Helper: hier prüfen ob's das schon gibt.
+
+| Datei | Zweck | Schlüsselfunktionen |
+|-------|-------|---------------------|
+| `lib/db.php` | DB-Zugriff (PDO-Singleton) | `getDb()` — gibt PDO-Instanz, nutzt `config/database.php` |
+| `lib/helpers.php` | API-Response + Utility-Helpers | `jsonResponse($data, $status)`, `apiSuccess($data)`, `apiError($msg, $status)`, `binaryIp(string $ipString): string` |
+| `lib/auth.php` | Single-Admin-Login + Session | `attemptLogin($user, $pw)`, `logout()`, `requireLogin()`, `currentUser()`, `isApiRequest()` |
+| `lib/rate_limit.php` | Sliding-Window-Rate-Limiter | `checkRateLimit($ipBinary, $limitPerMin, $windowMin): bool` — schreibt in `rate_limits`-Tabelle |
+| `lib/public_api_guard.php` | Public-API-Härtung (Layer 1-4) | `enforcePublicApiHardening($shopId): array` — CORS + Referer + Rate-Limit + Cache-Header, gibt `{shop_id, shop_row}` zurück |
+| `lib/api_clients/google.php` | Google Business Profile API-Client | (kommt nach API-Freigabe) |
+| `lib/api_clients/trustpilot.php` | Trustpilot API-Client | (kommt nach API-Freigabe) |
+
+**Stand:** Phase 1 Backend-Foundation. Helper werden in den Phasen 1-3 implementiert. API-Clients folgen sobald externe APIs freigeschaltet sind.
+
+## Cron-Skripte (`src/_tools/`)
+
+| Datei | Frequenz | Zweck |
+|-------|----------|-------|
+| `_tools/cron-cleanup-rate-limits.php` | alle 15 Min | Buckets älter als 1h aus `rate_limits` löschen |
+| `_tools/cron-fetch-google.php` | alle 6h | (kommt nach API-Freigabe) |
+| `_tools/cron-fetch-trustpilot.php` | alle 6h | (kommt nach API-Freigabe) |
+
+**Aufruf-Pattern:** PHP-CLI via cPanel-Cronjob, niemals als HTTP-Endpoint (Tools-Folder ist nicht im DocRoot — nicht über HTTP erreichbar).
 
 ## Brevo-Integration (4-Stufen-Modell, in Phase 4)
 
