@@ -332,8 +332,14 @@ Wird laufend gepflegt. Jeder neue Endpoint muss hier eingetragen werden (siehe S
 |------|---------|--------|-------|
 | `/index.php` | GET, POST | keiner (Login-Form) — cPanel-Verzeichnisschutz greift davor | Login-Seite mit CSRF |
 | `/logout.php` | GET | keiner | Session zerstören, Redirect zu Login |
-| `/dashboard.php` | GET | `requireLogin()` | Admin-Übersicht (Phase 1: Layout-Stub, Phase 3: voll funktional) |
+| `/dashboard.php` | GET | `requireLogin()` | Admin-Hub — verlinkt auf Sub-Pages der Funktions-Bereiche |
 | `/widget-test.php` | GET | `requireLogin()` | Live-Test des Widgets ohne JTL-Embedding (intern) |
+| `/reviews.php` | GET | `requireLogin()` | Reviews-Übersicht (Filter, Antwort-Liste) — **geplant Phase 3** |
+| `/replies.php` | GET | `requireLogin()` | Antwort-Management (Push-Status, Reply-Editor) — **geplant Phase 3** |
+| `/analytics.php` | GET | `requireLogin()` | Wachstumsgraph, Funnel, Durchschnitt pro Plattform/Shop — **geplant Phase 3** |
+| `/widget-config.php` | GET, POST | `requireLogin()` | Pro-Shop-Widget-Konfigurator (Layout, Filter, Custom-CSS) — **geplant Phase 3** |
+| `/qr.php` | GET | `requireLogin()` | QR-Code-Generator für Verpackung/Marktstand — **geplant Phase 3** |
+| `/shops.php` | GET | `requireLogin()` | Shop-Switcher / Multi-Tenant-Verwaltung — **geplant Phase 3** |
 | `/oauth/google/callback.php` | GET | keiner (OAuth-Callback) — eigene Pfad-Validierung | Google-OAuth-Redirect-Endpoint (Phase Google-API) |
 | `/api/reply.php` | POST | `requireLogin()` + CSRF | Antwort auf Review verfassen + an Quelle pushen (Phase 3) |
 

@@ -76,30 +76,30 @@ $lastSync = dbQueryOne(
         </div>
 
         <div class="grid grid--2">
-            <article class="hub-tile hub-tile--stub" aria-disabled="true">
+            <a href="/reviews.php" class="hub-tile">
                 <h3>Reviews-Übersicht</h3>
                 <p>Filter nach Plattform, Shop, Sternanzahl, Datum. Direkt aus der Liste antworten.</p>
-            </article>
-            <article class="hub-tile hub-tile--stub" aria-disabled="true">
+            </a>
+            <a href="/replies.php" class="hub-tile">
                 <h3>Antworten verwalten</h3>
                 <p>Reply auf Google / Trustpilot per API zurückpushen. Status-Tracking pro Antwort.</p>
-            </article>
-            <article class="hub-tile hub-tile--stub" aria-disabled="true">
+            </a>
+            <a href="/analytics.php" class="hub-tile">
                 <h3>Analytics</h3>
                 <p>Wachstumsgraph, Funnel, Durchschnitt pro Plattform und Shop.</p>
-            </article>
-            <article class="hub-tile hub-tile--stub" aria-disabled="true">
+            </a>
+            <a href="/widget-config.php" class="hub-tile">
                 <h3>Widget-Konfigurator</h3>
                 <p>Layout, Filter (min Sterne, max Items), Custom-CSS pro Shop.</p>
-            </article>
-            <article class="hub-tile hub-tile--stub" aria-disabled="true">
+            </a>
+            <a href="/qr.php" class="hub-tile">
                 <h3>QR-Code-Generator</h3>
                 <p>QR-Codes für Verpackung, Marktstand, etc. — führen direkt zur Bewertungsseite.</p>
-            </article>
-            <article class="hub-tile hub-tile--stub" aria-disabled="true">
+            </a>
+            <a href="/shops.php" class="hub-tile">
                 <h3>Shop-Switcher</h3>
                 <p>Pilzling / Pilzwald / Shroom Boom — alles in einer Oberfläche, Multi-Tenant.</p>
-            </article>
+            </a>
         </div>
     </section>
 </main>
