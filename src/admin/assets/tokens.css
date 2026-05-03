@@ -49,8 +49,11 @@
     --space-7: 3rem;        /* 48px */
     --space-8: 4rem;        /* 64px */
 
-    /* === Typografie === */
-    --font-sans: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
+    /* === Typografie ===
+     * Rubik ist Pilzling-CI-Font (uebernommen aus production-app, self-hosted via @font-face).
+     * Fallback-Stack falls Font nicht geladen werden kann.
+     */
+    --font-sans: "Rubik", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
     --font-mono: ui-monospace, "SF Mono", Consolas, "Liberation Mono", monospace;
 
     --font-size-xs: 0.72rem;   /* Chips, Captions */

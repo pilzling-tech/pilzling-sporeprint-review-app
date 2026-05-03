@@ -390,6 +390,63 @@ input.is-invalid:focus {
     font-size: var(--font-size-sm);
 }
 
+/* === Spaltenbreiten-Standard (3 Kategorien — uebernommen aus production-app) ===
+ *
+ * Klassen auf <th> UND <td> setzen. Browser verteilt den Platz:
+ * Fix-Spalten haben harte Breite, Kompakt-Spalten flexen in einem Bereich,
+ * Flex-Spalten haben nur min-width und fuellen den Rest.
+ */
+
+/* --- Fix (kaum Flexibilitaet) --- */
+.col-stars     { width: 60px;  text-align: right; }                  /* 5 ★ */
+
+/* --- Kompakt (Wunschbreite mit Range) --- */
+.col-id        { width: 100px; min-width: 80px;  max-width: 130px; } /* Review-IDs, Sync-Run-IDs */
+.col-status    { width: 100px; min-width: 85px;  max-width: 130px; } /* Chip-Spalten */
+.col-datum     { width: 110px; min-width: 90px;  max-width: 130px; text-align: right; }
+.col-source    { width: 100px; min-width: 80px;  max-width: 120px; } /* google/trustpilot/jtl */
+.col-shop      { width: 110px; min-width: 90px;  max-width: 140px; } /* pilzling/pilzwald/shroom-boom */
+.col-author    { width: 140px; min-width: 100px; max-width: 200px; }
+
+/* --- Flex (nur Minimum, fuellt Rest) --- */
+.col-content   { min-width: 200px; }                                  /* Review-Text — Hauptspalte */
+.col-product   { min-width: 120px; }                                  /* Produktname bei JTL-Reviews */
+.col-actions   { width: auto; white-space: nowrap; text-align: right; } /* Inline-Buttons */
+
+/* === Texuberlauf-Standard ===
+ * Alle Tabellen-Zellen einzeilig. Lange Inhalte (Review-Text, Antworten)
+ * werden mit Ellipsis abgeschnitten; voller Inhalt im title-Attribut
+ * fuer Hover-Tooltip.
+ */
+.data-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Mehrzeilige Spalten brauchen ein Opt-out */
+.data-table td.is-multiline {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+/* === ID-Rendering-Standard ===
+ * IDs werden muted + kleiner gerendert (visueller Anker ist die Inhalt-Spalte
+ * daneben — z.B. der Review-Text). Konvention aus production-app.
+ */
+.id-cell {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-variant-numeric: tabular-nums;
+}
+
+/* === Utility: muted Text === */
+.muted,
+.text-muted {
+    color: var(--color-text-muted);
+}
+
 /* === Table-Toolbar (Suche + Filter + Pagination-Container) === */
 
 .table-toolbar {

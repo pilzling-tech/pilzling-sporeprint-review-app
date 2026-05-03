@@ -160,9 +160,32 @@ Jeder PHP-Endpoint ruft als allererste Zeile **genau eine** der beiden Schutz-Fu
 
 Niemals beide oder keine. Wenn ein Endpoint unklar zwischen beiden steht, ist das ein Architektur-Bug — nicht raten, sondern explizit klären welche Schicht greifen soll.
 
-### Umlaute-Pflicht
+### Format-Standards (SSOT)
 
-In allen `.md`-Dateien, Code-Kommentaren, UI-Strings und Commit-Messages müssen deutsche Umlaute korrekt geschrieben werden — nicht als ASCII-Substitution. Einzige Ausnahme: Code-Variablennamen, Funktionsnamen, Datei-/Ordnernamen.
+**Datum / Zeit / Format überall über zentrale Helper:**
+
+- **PHP:** `lib/helpers.php` → `formatDate($iso)`, `formatDate($iso, true)` (mit Uhrzeit), `humanTimeDiff($iso)` (relative Zeit). Niemals `date('d.m.Y', ...)` direkt im Page-Code.
+- **JS:** `src/admin/assets/format.js` → `AppFormat.date(iso)`, `AppFormat.dateTime(iso)`, `AppFormat.relative(iso)`. Niemals `toLocaleDateString()` / `toLocaleString()` / `new Intl.DateTimeFormat()` direkt.
+- **Display:** TT.MM.JJJJ mit führender Null. Bei null/leer/ungültig: Em-Dash `–`. Locale: deutsche Konventionen (Komma als Dezimaltrennzeichen).
+
+Volle Doku + Erkennungs-Greps: `docs/DESIGN-SYSTEM.md` Sektion 2b.
+
+### Sprache + Schreibweise
+
+**Umlaut-Pflicht (hart erzwungen via Pre-Commit-Hook `_tools/check_umlauts.py`):**
+
+In allen `.md`-Dateien, PHP-Strings (Echo, HTML, Errors), JS-Strings (UI-Text), Code-Kommentaren und Commit-Messages müssen deutsche Umlaute korrekt geschrieben werden — niemals ASCII-Substitution wie `Aenderung`, `fuer`, `moeglich`, `ueber`, `Stueck`. **Einzige Ausnahme:** Code-Variablennamen, Funktionsnamen, Datei-/Ordnernamen, DB-Spalten (dort ASCII).
+
+**Genderneutrale Sprache:** Im Zweifel `:innen-Form` (`Kund:innen`, `Bewerter:innen`). Niemals nur männliche Form außer bei konkret bekannter Person.
+
+**Anrede:**
+- Admin-UI (intern): **Du**-Form
+- Widget (im Shop, externe Endkund:innen): **Sie**-Form oder neutral
+- Code-Doku, Commits: neutral oder Du
+
+**Tone:** sachlich, freundlich, kompakt. Keine Buzzwords, keine Marketing-Sprache, keine Emojis im Admin-UI. Konkret statt abstrakt. Aktiv statt passiv. Fehlermeldungen lösungsorientiert.
+
+Volle Konvention mit Substitutions-Tabelle: `docs/DESIGN-SYSTEM.md` Sektion 5b.
 
 ## SSOT-Nachschlagewerk
 

@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../lib/auth.php';
 require_once __DIR__ . '/../lib/db.php';
+require_once __DIR__ . '/../lib/helpers.php';
 
 requireLogin();
 
@@ -59,7 +60,10 @@ $lastSync = dbQueryOne(
             <li class="status-pending">Google Reviews-API wartet auf Freigabe</li>
             <li class="status-pending">Trustpilot Public-API wartet auf Freigabe</li>
             <?php if ($lastSync): ?>
-                <li class="status-ok">Letzter Sync ok: <?= htmlspecialchars($lastSync['shop_id']) ?> / <?= htmlspecialchars($lastSync['source']) ?> um <?= htmlspecialchars($lastSync['finished_at'] ?? '?') ?></li>
+                <li class="status-ok">
+                    Letzter Sync: <?= htmlspecialchars($lastSync['shop_id']) ?> / <?= htmlspecialchars($lastSync['source']) ?>
+                    <span class="text-muted">— <?= htmlspecialchars(formatDate($lastSync['finished_at'], true)) ?> (<?= htmlspecialchars(humanTimeDiff($lastSync['finished_at'])) ?>)</span>
+                </li>
             <?php else: ?>
                 <li class="status-pending">Noch kein erfolgreicher Sync — Cron-Skripte folgen sobald APIs freigegeben sind</li>
             <?php endif; ?>

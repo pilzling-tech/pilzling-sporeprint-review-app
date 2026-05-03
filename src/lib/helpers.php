@@ -93,3 +93,48 @@ function clientIp(): string
     }
     return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 }
+
+// =====================================================================
+// FORMAT-HELPER (SSOT — siehe docs/DESIGN-SYSTEM.md "Format-Standards")
+//
+// Pattern aus production-app/src/includes/helpers.php uebernommen
+// (Pre-Check A3 erweitert um diese Helper). Konvention:
+//   - Niemals date() / strftime() / toLocaleString() direkt im View-Code
+//   - Niemals number_format() direkt im View-Code
+//   - Immer formatDate() / humanTimeDiff() benutzen
+//
+// JS-Pendants in src/admin/assets/format.js — beide muessen synchron bleiben.
+// =====================================================================
+
+/**
+ * Datum formatieren — TT.MM.JJJJ oder TT.MM.JJJJ, HH:MM.
+ * Akzeptiert ISO-Strings ('2026-04-12', '2026-04-12 14:30:00', '2026-04-12T14:30:00').
+ * Bei null/leer/ungueltig: "–" (Em-Dash).
+ */
+function formatDate(?string $iso, bool $mitUhrzeit = false): string
+{
+    if ($iso === null || $iso === '') return '–';
+    $ts = strtotime($iso);
+    if ($ts === false) return '–';
+    return $mitUhrzeit
+        ? date('d.m.Y, H:i', $ts)
+        : date('d.m.Y', $ts);
+}
+
+/**
+ * Menschenlesbare Zeitdifferenz: "gerade eben", "vor 5 Min", "vor 3h", "vor 2 Tagen".
+ *
+ * SYNC-PAIR: JS-Pendant in src/admin/assets/format.js → AppFormat.relative().
+ * Beide muessen synchron bleiben (gleiche Schwellwerte, gleiche Labels).
+ */
+function humanTimeDiff(string $datetime): string
+{
+    $ts = strtotime($datetime);
+    if ($ts === false) return '–';
+    $diff = time() - $ts;
+    if ($diff < 60) return 'gerade eben';
+    if ($diff < 3600) return 'vor ' . (int) ($diff / 60) . ' Min';
+    if ($diff < 86400) return 'vor ' . (int) ($diff / 3600) . 'h';
+    $days = (int) ($diff / 86400);
+    return 'vor ' . $days . ($days === 1 ? ' Tag' : ' Tagen');
+}

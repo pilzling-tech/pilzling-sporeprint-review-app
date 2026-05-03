@@ -56,9 +56,19 @@ Pages laden nur `admin.css`. Lade-Reihenfolge ist über @import gesetzt.
 
 Alle CTAs / klickbaren Elemente wechseln im Hover zu **Orange** (`--color-primary`). Inputs hingegen nutzen **Blau** für Focus (ruhig, navigierend).
 
-## 2. Typografie
+## 2. Schriftart + Typografie
 
-System-Font-Stack, keine externen Fonts. Schrift-Hierarchie:
+### Primär-Schriftart: Rubik
+
+**Pilzling-CI-Font.** Übernommen 1:1 aus production-app. Self-hosted (kein Google-Fonts-CDN — DSGVO-freundlich, schneller, kein externes Tracking).
+
+- **Datei:** `src/admin/assets/fonts/Rubik.woff2` (Variable Font, deckt 100-900 ab)
+- **Definition:** `@font-face` in `base.css`
+- **Token:** `--font-sans` in `tokens.css` mit System-Fallback-Stack falls Font nicht laden kann
+
+**Niemals** Google Fonts via `<link rel="stylesheet" href="https://fonts.googleapis.com/...">` einbinden — DSGVO-Verstoß und Performance-Verschlechterung.
+
+### Schrift-Hierarchie
 
 | Element | Font-Size-Token | Verwendung |
 |---------|----------------|------------|
@@ -67,7 +77,48 @@ System-Font-Stack, keine externen Fonts. Schrift-Hierarchie:
 | `h3` | `--font-size-lg` (1.2rem) | Card-Title, Subsection |
 | Body | `--font-size-base` (0.9rem) | Default |
 | Labels / Meta | `--font-size-sm` (0.85rem) | Form-Labels, Captions |
-| Chips, Captions | `--font-size-xs` (0.72rem) | Status-Chips, kleine Indikatoren |
+| Chips, Captions, IDs | `--font-size-xs` (0.72rem) | Status-Chips, kleine Indikatoren |
+
+Font-Weights: 400 (Regular), 500 (Medium für Labels/Buttons), 600 (Semibold für Headings/Primary-Buttons), 700 (Bold für `.app-header__brand`).
+
+## 2b. Format-Standards (SSOT)
+
+**Format ist so grundlegend wie Farben** — und genauso eine SSOT. Es gibt **eine Stelle pro Format-Frage**, nirgendwo sonst. Dupliziertes Formatieren führt unweigerlich zu Drift (`04.05.2026` hier, `2026-05-04` dort, `4. Mai 2026` woanders).
+
+### SSOT-Tabelle
+
+| Was | PHP-SSOT | JS-SSOT |
+|-----|----------|---------|
+| Datum (TT.MM.JJJJ) | `lib/helpers.php::formatDate($iso)` | `AppFormat.date(iso)` |
+| Datum + Uhrzeit (TT.MM.JJJJ, HH:MM) | `lib/helpers.php::formatDate($iso, true)` | `AppFormat.dateTime(iso)` |
+| Uhrzeit allein (HH:MM) | (PHP: `date('H:i', strtotime(...))`) | `AppFormat.time(iso)` |
+| Relative Zeit ("vor 3h") | `lib/helpers.php::humanTimeDiff($iso)` | `AppFormat.relative(iso)` |
+
+`AppFormat` lebt in `src/admin/assets/format.js`. Wird ab Phase 3 von Pages eingebunden — vor allen anderen JS-Modulen.
+
+### Anzeige-Format
+
+- **Datum:** TT.MM.JJJJ mit **führender Null** (`05.04.2026`, niemals `5.4.2026`)
+- **Datum + Zeit:** `04.05.2026, 14:30` (Komma + Leerzeichen)
+- **Relative Zeit:** "gerade eben" / "vor 5 Min" / "vor 3h" / "vor 2 Tagen"
+- **Locale:** **deutsche Konventionen** überall — Dezimal-Komma, Tausender-Punkt
+- **Bei null/leer/ungültig:** Em-Dash `–` (kein "n/a", kein "null", kein leerer String)
+
+### Vier harte Regeln
+
+1. **Kein `date()` direkt im PHP-View-Code** — immer über `formatDate()` / `humanTimeDiff()`
+2. **Kein `toLocaleDateString()` / `toLocaleString()` direkt im JS** — immer über `AppFormat.*`
+3. **Kein `new Intl.DateTimeFormat(...)` direkt** — Pattern-Drift-Risiko
+4. **Kein hardcoded Format-String** wie `'YYYY-MM-DD'` in UI-Code — nur in DB-Queries (dort ISO erwartet)
+
+### Erkennungs-Greps (für CI / Reviews)
+
+```bash
+# In Page-Code (außerhalb lib/) sollten diese 0 Treffer zeigen
+rg "date\('d\." src/admin/ src/public/                # 0 außerhalb lib/helpers.php
+rg "toLocaleString|toLocaleDateString" src/admin/     # 0 außerhalb format.js
+rg "new Intl\." src/admin/                            # 0 außerhalb format.js
+```
 
 ## 3. Buttons (5 Basis-Typen + Modifier)
 
@@ -150,22 +201,110 @@ font-size: var(--font-size-base);
 ## 5. Chips / Badges
 
 ```html
-<span class="chip chip--green">Visible</span>
-<span class="chip chip--orange">Pending</span>
-<span class="chip chip--red">Error</span>
-<span class="chip chip--blue">Info</span>
-<span class="chip chip--peach">Bestellt</span>
-<span class="chip chip--gray">Storniert</span>
+<span class="chip chip--green">Sichtbar</span>
+<span class="chip chip--orange">Neu</span>
+<span class="chip chip--red">Geflagged</span>
+<span class="chip chip--blue">Gepostet</span>
+<span class="chip chip--peach">Wartend</span>
+<span class="chip chip--gray">Versteckt</span>
 ```
 
-| Variante | Wann |
-|----------|------|
-| `chip--green` | Erfolg, OK, sichtbar, geliefert |
-| `chip--orange` | Pending, offen, in Arbeit, neue Review |
-| `chip--blue` | Info, exportiert, in Sync |
-| `chip--peach` | Bestellt, erwartet |
-| `chip--red` | Fehler, storniert, geflagged |
-| `chip--gray` | Inaktiv, neutral, archiviert |
+### Sporeprint-Status-Mapping (SSOT)
+
+| Datenfeld + Wert | Chip-Klasse | Anzeige-Label |
+|------------------|-------------|---------------|
+| `reviews.visibility = 'visible'` | `chip--green` | Sichtbar |
+| `reviews.visibility = 'hidden'` | `chip--gray` | Versteckt |
+| `reviews.visibility = 'flagged'` | `chip--red` | Geflagged |
+| `reviews.source = 'google'` | `chip--blue` | Google |
+| `reviews.source = 'trustpilot'` | `chip--green` | Trustpilot |
+| `reviews.source = 'jtl'` | `chip--peach` | JTL |
+| `review_replies.external_status = 'pending'` | `chip--orange` | Wartend |
+| `review_replies.external_status = 'sent'` | `chip--green` | Gepostet |
+| `review_replies.external_status = 'failed'` | `chip--red` | Fehlgeschlagen |
+| `sync_runs.status = 'running'` | `chip--blue` | Läuft |
+| `sync_runs.status = 'ok'` | `chip--green` | OK |
+| `sync_runs.status = 'error'` | `chip--red` | Fehler |
+| Neue Review (< 24h alt) | `chip--orange` | Neu |
+
+Bei jedem neuen Status-Feld in der DB: hier eintragen. Dieser Mapping ist **SSOT** — Code referenziert die Klasse über zentrale Render-Funktion (kommt in Phase 3).
+
+### Generisches Variant-Mapping (für unbekannte Status)
+
+| Variante | Wann (semantisch) |
+|----------|-------------------|
+| `chip--green` | Erfolg, OK, sichtbar, geliefert, abgeschlossen |
+| `chip--orange` | Pending, offen, neu, in Arbeit, Aufmerksamkeit |
+| `chip--blue` | Info, in Sync, neutral-positiv |
+| `chip--peach` | Wartend, erwartet, Zwischenzustand |
+| `chip--red` | Fehler, geflagged, storniert, kritisch |
+| `chip--gray` | Inaktiv, archiviert, versteckt, neutral |
+
+## 5a. Empty-States
+
+Wenn eine Liste/Tabelle/Sektion **keine Daten** hat, niemals einen leeren Block stehen lassen — immer eine **klare, kurze Erklärung** was da hin müsste und ggf. wie:
+
+```html
+<div class="data-table__empty">
+    Noch keine Reviews. Sobald eine API freigegeben ist und der Cron gelaufen ist,
+    erscheinen sie hier.
+</div>
+```
+
+Drei Empty-State-Typen:
+
+| Typ | Wann | Beispiel-Text |
+|-----|------|---------------|
+| **Wartend** | System läuft, Daten kommen noch | "Noch keine Reviews. Erste Daten ab dem ersten Cron-Lauf." |
+| **Leer durch Filter** | User hat gefiltert, kein Treffer | "Keine Reviews mit dieser Filter-Kombination. [Filter zurücksetzen]" |
+| **Echt leer** | Es gibt nichts und es ist OK | "Keine Antworten verfasst." |
+
+Empty-States sind **kein Fehler-State** — sie sind erwartete Zustände, keine Callout-Error-Box, sondern dezente muted-Texte oder gestylte `.data-table__empty`-Container.
+
+## 5b. Sprache, Schreibweise, Tone
+
+UI-Strings, Doku, Commit-Messages — überall gilt:
+
+### Umlaut-Pflicht (hart)
+
+In **allen** `.md`-Dateien, PHP-Strings (Echo, HTML-Inhalt, Error-Messages), JS-Strings (UI-Text), Code-Kommentaren und Commit-Messages müssen deutsche Umlaute korrekt geschrieben werden — niemals ASCII-Substitution wie `Aenderung`, `fuer`, `moeglich`, `ueber`.
+
+| Falsch | Richtig |
+|--------|---------|
+| `fuer` | `für` |
+| `Aenderung` | `Änderung` |
+| `moeglich` | `möglich` |
+| `naechst` | `nächst` |
+| `Stueck` | `Stück` |
+| `ueber` | `über` |
+| `oeffnen` | `öffnen` |
+| `Schluessel` | `Schlüssel` |
+
+**Einzige Ausnahme:** Code-Variablennamen, Funktionsnamen, Datei-/Ordnernamen, DB-Spalten — dort ASCII (sonst PHP/SQL-/Encoding-Probleme).
+
+**Erzwingung:** Pre-Commit-Hook in `_tools/check_umlauts.py` prüft staged `.md`-Files + Commit-Messages gegen `_tools/umlauts-patterns.txt`. Allowlist in `_tools/umlauts-allowlist.txt` für Eigennamen die zufällig wie ASCII-Substitution aussehen (z.B. "Bauer", "Goethe").
+
+### Genderneutrale Sprache
+
+- **Im Zweifel `:innen-Form`** — `Kund:innen`, `Mitarbeiter:innen`, `Bewerter:innen`, `Nutzer:innen`
+- Alternativ neutrale Begriffe wo natürlich möglich: "Personal" statt "Mitarbeiter:innen", "Team" statt "Mitarbeiter:innen-Gruppe"
+- **Niemals nur männliche Form** ("der Kunde") außer es ist eine konkrete Person bekannten Geschlechts
+
+### Du-Form (intern) / Sie-Form (Widget)
+
+| Kontext | Anrede |
+|---------|--------|
+| **Admin-UI** (intern, wir sind unter uns) | **Du** ("Logge dich ein", "Deine Reviews") |
+| **Widget** (im Shop, externe Endkund:innen) | **Sie** ("Hinterlassen Sie eine Bewertung") oder neutral |
+| **Doku, Commit-Messages, Code-Kommentare** | **Du** wenn überhaupt Anrede nötig — sonst neutral formulieren |
+
+### Tone
+
+- **Sachlich, freundlich, kompakt.** Keine Buzzwords, keine Marketing-Sprache, keine Emojis im Admin-UI.
+- **Konkret statt abstrakt** — "Login nicht möglich" statt "Authentifizierung fehlgeschlagen"
+- **Aktiv statt passiv** — "Speichern" statt "Es wird gespeichert"
+- **Fehlermeldungen lösungsorientiert** — sagen *was* zu tun ist, nicht nur *was* nicht funktioniert
+- **Datenschutz-konform** — niemals personenbezogene Daten in UI-Strings ohne Rechtsgrundlage anzeigen
 
 ## 6. Tables (`.data-table`)
 
@@ -197,6 +336,87 @@ Header: Blau-Dark gefüllt, weißer Text uppercase. Alternate-Rows: dezenter Bla
 Numerische Spalten bekommen `.col-numeric` (Klasse auf `<td>`) bzw. `.col-numeric-header` (auf `<th>`) → rechtsbündig + tabular-nums (Mono-Spacing).
 
 Leere Tabelle: `<div class="data-table__empty">Keine Daten vorhanden.</div>` direkt unter dem Table-Body oder statt der Tabelle.
+
+### Spaltenbreiten-Standard (3 Kategorien)
+
+Klassen auf `<th>` UND `<td>`. Browser verteilt den restlichen Platz — Flex-Spalten füllen den Rest auf.
+
+**Fix** (kaum Flexibilität):
+
+| Klasse | Breite | Verwendung |
+|--------|--------|-----------|
+| `.col-stars` | 60px | 5 ★ — rechtsbündig |
+
+**Kompakt** (Wunschbreite mit min/max-Range):
+
+| Klasse | Breite | Range | Verwendung |
+|--------|--------|-------|-----------|
+| `.col-id` | 100px | 80–130px | Review-IDs, Sync-Run-IDs |
+| `.col-status` | 100px | 85–130px | Chip-Spalten (Visibility, Sync-Status) |
+| `.col-datum` | 110px | 90–130px | `04.05.2026` — rechtsbündig |
+| `.col-source` | 100px | 80–120px | google / trustpilot / jtl |
+| `.col-shop` | 110px | 90–140px | pilzling / pilzwald / shroom-boom |
+| `.col-author` | 140px | 100–200px | Bewerter-Vorname/-Initialen |
+
+**Flex** (nur Minimum, füllt Rest):
+
+| Klasse | Min | Verwendung |
+|--------|-----|-----------|
+| `.col-content` | 200px | Review-Text — visueller Anker, Hauptspalte |
+| `.col-product` | 120px | Produktname bei JTL-Reviews |
+| `.col-actions` | auto | Inline-Buttons, niemals abschneiden |
+
+### Textüberlauf-Standard
+
+Default: einzeilig + `text-overflow: ellipsis` + `white-space: nowrap`. Voller Inhalt im `title="…"`-Attribut für Hover-Tooltip.
+
+Mehrzeilige Spalten (z.B. lange Antworten in einem Detail-View) bekommen `.is-multiline` als zusätzliche Klasse → opt-in für Wrap.
+
+### Einheitliche Spalten-Labels (App-weit konsistent)
+
+Gleiche Daten = gleicher Spaltenname, egal in welcher Tabelle:
+
+| Datenfeld | Spalten-Label | Niemals |
+|-----------|--------------|---------|
+| `review_id` | **Review-Nr.** | "ID", "Nr." |
+| `posted_at` | **Datum** | "Erstellt", "Geschrieben am" |
+| `stars` | **Sterne** | "Bewertung", "Rating" |
+| `source` | **Plattform** | "Quelle", "Source", "Service" |
+| `shop_id` / `shop` | **Shop** | "Mandant", "Brand" |
+| `author` | **Autor:in** | "Bewerter", "Name", "Von" |
+| `visibility` | **Sichtbarkeit** | "Visible", "Status", "Anzeige" |
+| `content` | **Bewertung** | "Text", "Inhalt", "Comment" |
+| `product_name` | **Produkt** | "Artikel", "Item" |
+| `external_status` | **Push-Status** | "Sync-Status", "API-Status" |
+
+Bei jeder neuen Tabelle: diese Labels nutzen — keine Synonyme erfinden.
+
+### ID-Rendering-Standard
+
+IDs werden **muted + kleiner** gerendert (visueller Anker ist die Inhalt-Spalte daneben — z.B. der Review-Text):
+
+```html
+<td class="col-id id-cell">REV-00042</td>
+<td class="col-content">Frische Bio-Pilze in Top-Qualität...</td>
+```
+
+`.id-cell` setzt `color: muted`, `font-size: xs`, `tabular-nums`. Nie bold, nie default-size.
+
+### Datumsformat-Standard
+
+In Tabellen: **TT.MM.JJJJ** rechtsbündig (Klasse `.col-datum`). Mit Uhrzeit nur wenn explizit relevant — sonst Hover-Tooltip mit voller Zeit.
+
+```html
+<td class="col-datum" title="04.05.2026, 14:30:22"><?= formatDate($row['posted_at']) ?></td>
+```
+
+### Ausrichtung-Standard
+
+| Spalten-Typ | Ausrichtung | Begründung |
+|-------------|-------------|-----------|
+| Sterne, Datum, IDs (numerisch), `.col-actions` | rechts | scannbar, tabular-nums |
+| Namen, Texte, Plattformen, Shops, Status-Chips | links | natürlicher Lesefluss |
+| Mehrzeilige Inhalte | links | Wrap-Beginn linksbündig |
 
 ### Toolbar (über der Tabelle)
 

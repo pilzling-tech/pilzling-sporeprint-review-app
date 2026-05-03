@@ -346,9 +346,11 @@ Stylesheets in `src/admin/assets/`:
 |-------|-------|
 | `admin.css` | Single-Entry-Point, lädt die anderen Files via `@import` in der richtigen Reihenfolge |
 | `tokens.css` | CSS-Custom-Properties (Farben, Spacing, Typo, Radius, Shadows) — SSOT für alle Werte |
-| `base.css` | Reset, Typography (h1-h4, p, links, lists, code), Utility-Klassen (`text-muted`, `mt-*`) |
+| `base.css` | `@font-face` Rubik, Reset, Typography (h1-h4, p, links, lists, code), Utility-Klassen (`text-muted`, `mt-*`) |
 | `layout.css` | App-Header, App-Main, Page-Header, Login-Layout, Grid, Section/Subsection |
-| `components.css` | Buttons, Forms, Cards, Chips, Tables, Callouts, Toasts, Status-Block |
+| `components.css` | Buttons, Forms, Cards, Chips, Tables (inkl. Spaltenbreiten + ID-Rendering), Callouts, Toasts, Status-Block |
+| `format.js` | JS-Format-Helper (`AppFormat.date`, `dateTime`, `time`, `relative`) — SYNC-PAIR mit `lib/helpers.php`-Format-Funktionen |
+| `fonts/Rubik.woff2` | Pilzling-CI-Font, self-hosted (kein Google-Fonts-CDN) |
 
 **Konvention:** Admin-Pages (`src/admin/*.php`) laden ausschließlich `admin.css`. Keine Inline-Styles, keine page-spezifischen CSS-Files. Volle Doku: `docs/DESIGN-SYSTEM.md`.
 
@@ -361,7 +363,7 @@ Stylesheets in `src/admin/assets/`:
 | Datei | Zweck | Schlüsselfunktionen |
 |-------|-------|---------------------|
 | `lib/db.php` | DB-Zugriff (PDO-Singleton) | `getDb()` — gibt PDO-Instanz, nutzt `config/database.php` |
-| `lib/helpers.php` | API-Response + Utility-Helpers | `jsonResponse($data, $status)`, `apiSuccess($data)`, `apiError($msg, $status)`, `binaryIp(string $ipString): string` |
+| `lib/helpers.php` | API-Response + Format + Utility-Helpers | `jsonResponse($data, $status)`, `apiSuccess($data)`, `apiError($msg, $status)`, `binaryIp(string)`, `clientIp()`, `formatDate($iso, $mitUhrzeit)`, `humanTimeDiff($datetime)` |
 | `lib/auth.php` | Single-Admin-Login + Session | `attemptLogin($user, $pw)`, `logout()`, `requireLogin()`, `currentUser()`, `isApiRequest()` |
 | `lib/rate_limit.php` | Sliding-Window-Rate-Limiter | `checkRateLimit($ipBinary, $limitPerMin, $windowMin): bool` — schreibt in `rate_limits`-Tabelle |
 | `lib/public_api_guard.php` | Public-API-Härtung (Layer 1-4) | `enforcePublicApiHardening($shopId): array` — CORS + Referer + Rate-Limit + Cache-Header, gibt `{shop_id, shop_row}` zurück |
