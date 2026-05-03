@@ -98,6 +98,28 @@ Wenn Funktionalität bereits in `lib/` existiert, **wird sie genutzt**. Niemals 
 
 Wenn ein Helper über zwei Endpoints geteilt werden soll: in `lib/` extrahieren, niemals lokal duplizieren.
 
+### SSOT-Prinzip UI (Admin-Backend)
+
+**Alle Styles leben in `src/admin/assets/`** — nirgendwo sonst:
+
+- **Tokens** (Farben, Spacing, Typo, Radius, Shadows): `tokens.css` → ausschließlich dort
+- **Komponenten** (Buttons, Forms, Cards, Chips, Tables, Callouts, Toasts, Status-Block): `components.css`
+- **Layout** (App-Header, App-Main, Login-Layout, Page-Header, Grid): `layout.css`
+- **Reset + Typo + Utilities**: `base.css`
+- **Hub** (Single Entry-Point): `admin.css` → wird von Pages eingebunden
+
+**In Admin-PHP-Pages verboten:**
+- ❌ `<style>...</style>`-Blöcke inline
+- ❌ `style="..."` Attribute auf Elementen
+- ❌ Hardcoded Farb-/Spacing-Werte (immer über `var(--token)`)
+- ❌ Page-spezifisches CSS-File (z.B. `dashboard.css`) — alles in `components.css` zentral
+
+**Vor neuer Komponente:** in `docs/DESIGN-SYSTEM.md` und `components.css` prüfen ob's das schon gibt. Wenn nicht: dort ergänzen, dann nutzen — niemals lokal duplizieren.
+
+Volle Konvention: `docs/DESIGN-SYSTEM.md`. Pattern-Quelle: `production-app/docs/DESIGN-SYSTEM.md` (kondensiertes Subset für Sporeprint).
+
+**Widget (Public-Subdomain) ist eigenständig** — kein Admin-CSS-Import, eigene Namespaces (`.sporeprint-*`). Widget-CSS lebt inline in `src/public/widget.js` (self-contained für JTL-Shop-Embedding).
+
 ### SSOT-Prinzip DB (keine redundanten Spalten)
 
 **Außer ID-/PK-Spalten existiert jeder Wert nur einmal.** Bei Mehrfach-Vorkommen → FK-Verweis statt Duplikat.
@@ -144,17 +166,18 @@ In allen `.md`-Dateien, Code-Kommentaren, UI-Strings und Commit-Messages müssen
 
 ## SSOT-Nachschlagewerk
 
-**Aktive Docs in `docs/` (Stand 2026-05-03):** 1 Datei (ARCHITEKTUR.md). Wenn diese Zahl nicht stimmt, greift die Docs-Vollständigkeits-Regel oben.
+**Aktive Docs in `docs/` (Stand 2026-05-03):** 2 Dateien (ARCHITEKTUR.md + DESIGN-SYSTEM.md). Wenn diese Zahl nicht stimmt, greift die Docs-Vollständigkeits-Regel oben.
 
 | Frage | Lies |
 |-------|------|
 | Globaler Kontext | `C:\AI-Workspace\CLAUDE.md` |
 | Dev-Projekt-Standard (Plan-Workflow, 3-Stufen-Methodik) | `C:\AI-Workspace\references\dev-projekt-standard.md` |
 | Roadmap + Phasen-Status | `_plans/ROADMAP.md` |
-| Aktiver Detailplan (Phase 0 Foundation) | `_plans/2026-05-03-phase-0-foundation.md` |
+| Aktiver Detailplan (Phase 1 Backend-Foundation) | `_plans/2026-05-03-phase-1-backend-foundation.md` |
 | Konzept-Diskussion (Stufen 1+2 abgeschlossen, Architektur-Pivot Vercel→Server Profis) | `_plans/2026-05-02-architektur-pivot-konzept.md` |
 | **System-Architektur**, Komponenten, Multi-Tenant, Tech Stack, Datenmodell, Sicherheits-Layer, Folder-Struktur, Cron-Strategie | `docs/ARCHITEKTUR.md` |
-| Widget-Prototyp (Sample-Daten, Carousel-HTML — wird in Phase 2 mit echten Daten verbunden) | `src/widget_prototype.html` |
+| **UI-Standards Admin** (Buttons, Forms, Cards, Chips, Tables, Callouts, Toasts, Layout, Tokens, BEM-Konvention) | `docs/DESIGN-SYSTEM.md` |
+| Widget-Prototyp (Sample-Daten, Carousel-HTML — wird in Phase 2 mit echten Daten verbunden) | `references/widget_prototype.html` |
 | CI-Material (Farben, Logos, Original-Layout vom alten onlinereviews.tech-System) | `references/` |
 | Pattern-Quelle (production-app als Vorlage, siehe Pre-Check im Konzept) | `C:\AI-Workspace\projects\dev\production-app\` |
 | **Archivierte Historie** (nur bei Bedarf): | |

@@ -12,7 +12,7 @@ requireLogin();
 
 $user = currentUser();
 
-// Phase-1-Status fuer den Dashboard-Statusblock — informativ, was schon laeuft.
+// Phase-1-Status fuer den Dashboard-Statusblock — informativ.
 $shopCount = (int) (dbQueryOne("SELECT COUNT(*) AS n FROM shops")['n'] ?? 0);
 $reviewCount = (int) (dbQueryOne("SELECT COUNT(*) AS n FROM reviews")['n'] ?? 0);
 $lastSync = dbQueryOne(
@@ -32,8 +32,12 @@ $lastSync = dbQueryOne(
 <link rel="stylesheet" href="/assets/admin.css">
 </head>
 <body>
+
 <header class="app-header">
-    <div class="app-header__brand">Sporeprint</div>
+    <a href="/dashboard.php" class="app-header__brand">Sporeprint</a>
+    <nav class="app-header__nav">
+        <a href="/dashboard.php" class="is-active">Dashboard</a>
+    </nav>
     <div class="app-header__user">
         <span><?= htmlspecialchars($user ?? '') ?></span>
         <a href="/logout.php">Logout</a>
@@ -41,13 +45,15 @@ $lastSync = dbQueryOne(
 </header>
 
 <main class="app-main">
-    <h1>Dashboard</h1>
+    <div class="page-header">
+        <h1>Dashboard</h1>
+    </div>
 
-    <div class="status-block">
+    <section class="status-block">
         <h2>Phase 1 — Foundation</h2>
         <ul>
             <li class="status-ok">Backend-Helper (lib/) live</li>
-            <li class="status-ok">Public-API-Endpoint /api/reviews mit Haertung aktiv</li>
+            <li class="status-ok">Public-API-Endpoint <code>/api/reviews</code> mit Haertung aktiv</li>
             <li class="status-ok">Admin-Login + Session</li>
             <li class="status-ok">Schema v1 eingespielt — <?= $shopCount ?> Shops konfiguriert, <?= $reviewCount ?> Reviews in DB</li>
             <li class="status-pending">Google Reviews-API wartet auf Freigabe</li>
@@ -58,34 +64,41 @@ $lastSync = dbQueryOne(
                 <li class="status-pending">Noch kein erfolgreicher Sync — Cron-Skripte folgen sobald APIs freigegeben sind</li>
             <?php endif; ?>
         </ul>
-    </div>
+    </section>
 
-    <div class="card-grid">
-        <article class="card is-stub">
-            <h2>Reviews-Uebersicht</h2>
-            <p>Filter nach Plattform, Shop, Sternanzahl, Datum. Direkt aus der Liste antworten.</p>
-        </article>
-        <article class="card is-stub">
-            <h2>Antworten verwalten</h2>
-            <p>Reply auf Google / Trustpilot per API zurueckpushen. Status-Tracking pro Antwort.</p>
-        </article>
-        <article class="card is-stub">
-            <h2>Analytics</h2>
-            <p>Wachstumsgraph, Funnel, Durchschnitt pro Plattform und Shop.</p>
-        </article>
-        <article class="card is-stub">
-            <h2>Widget-Konfigurator</h2>
-            <p>Layout, Filter (min Sterne, max Items), Custom-CSS pro Shop.</p>
-        </article>
-        <article class="card is-stub">
-            <h2>QR-Code-Generator</h2>
-            <p>QR-Codes fuer Verpackung, Marktstand, etc. — fuehren direkt zur Bewertungsseite.</p>
-        </article>
-        <article class="card is-stub">
-            <h2>Shop-Switcher</h2>
-            <p>Pilzling / Pilzwald / Shroom Boom — alles in einer Oberflaeche, Multi-Tenant.</p>
-        </article>
-    </div>
+    <section class="section">
+        <div class="subsection-header">
+            <h2>Funktions-Bereiche</h2>
+        </div>
+
+        <div class="grid grid--2">
+            <article class="card card--stub">
+                <h3>Reviews-Uebersicht</h3>
+                <p class="text-muted">Filter nach Plattform, Shop, Sternanzahl, Datum. Direkt aus der Liste antworten.</p>
+            </article>
+            <article class="card card--stub">
+                <h3>Antworten verwalten</h3>
+                <p class="text-muted">Reply auf Google / Trustpilot per API zurueckpushen. Status-Tracking pro Antwort.</p>
+            </article>
+            <article class="card card--stub">
+                <h3>Analytics</h3>
+                <p class="text-muted">Wachstumsgraph, Funnel, Durchschnitt pro Plattform und Shop.</p>
+            </article>
+            <article class="card card--stub">
+                <h3>Widget-Konfigurator</h3>
+                <p class="text-muted">Layout, Filter (min Sterne, max Items), Custom-CSS pro Shop.</p>
+            </article>
+            <article class="card card--stub">
+                <h3>QR-Code-Generator</h3>
+                <p class="text-muted">QR-Codes fuer Verpackung, Marktstand, etc. — fuehren direkt zur Bewertungsseite.</p>
+            </article>
+            <article class="card card--stub">
+                <h3>Shop-Switcher</h3>
+                <p class="text-muted">Pilzling / Pilzwald / Shroom Boom — alles in einer Oberflaeche, Multi-Tenant.</p>
+            </article>
+        </div>
+    </section>
 </main>
+
 </body>
 </html>

@@ -1,0 +1,164 @@
+/* Sporeprint Admin — Layout-Komponenten */
+
+/* === App-Header === */
+
+.app-header {
+    background: var(--color-white);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3) var(--space-5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: var(--header-height);
+}
+
+.app-header__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-dark);
+    text-decoration: none;
+}
+.app-header__brand:hover { color: var(--color-primary); }
+
+.app-header__nav {
+    flex: 1;
+    display: flex;
+    gap: var(--space-4);
+    margin-left: var(--space-5);
+}
+.app-header__nav a {
+    color: var(--color-dark);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+.app-header__nav a.is-active { color: var(--color-primary); }
+.app-header__nav a:hover { color: var(--color-primary); }
+
+.app-header__user {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+.app-header__user a { color: var(--color-text-muted); text-decoration: none; }
+.app-header__user a:hover { color: var(--color-primary); }
+
+/* === App-Main === */
+
+.app-main {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-5);
+}
+
+@media (max-width: 640px) {
+    .app-main {
+        padding: var(--space-4) var(--space-3);
+    }
+    .app-header {
+        padding: var(--space-3) var(--space-3);
+    }
+    .app-header__nav { margin-left: var(--space-3); }
+}
+
+/* === Page-Header (Seiten-Titel mit Actions-Bar) === */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+    flex-wrap: wrap;
+}
+
+.page-header h1 {
+    margin: 0;
+}
+
+.page-header__actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+/* === Container / Card-Wrapper === */
+
+.container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+}
+
+/* === Grid === */
+
+.grid {
+    display: grid;
+    gap: var(--space-4);
+}
+.grid--2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.grid--3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.grid--4 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+/* === Section / Subsection === */
+
+.section {
+    margin-bottom: var(--space-6);
+}
+
+.subsection-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+}
+.subsection-header h2,
+.subsection-header h3 {
+    margin: 0;
+}
+
+/* === Login-Layout (zentriert, ohne app-Header) === */
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-5);
+    background: var(--color-cream);
+}
+
+.login-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    width: 100%;
+    max-width: 360px;
+    box-shadow: var(--shadow-card);
+}
+
+.login-card__brand {
+    margin: 0 0 var(--space-1) 0;
+    font-size: var(--font-size-xl);
+    color: var(--color-dark);
+}
+.login-card__subtitle {
+    margin: 0 0 var(--space-5) 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+.login-card__footer {
+    margin-top: var(--space-5);
+    text-align: center;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}

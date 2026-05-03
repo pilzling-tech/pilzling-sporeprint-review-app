@@ -338,6 +338,22 @@ Wird laufend gepflegt. Jeder neue Endpoint muss hier eingetragen werden (siehe S
 
 **Konvention:** Jeder Admin-Endpoint ruft `requireLogin();` als allererste Zeile. Jeder Public-Endpoint ruft `enforcePublicApiHardening($shopId);` als allererste Zeile. Keine Ausnahmen.
 
+## Admin-UI-CSS-Architektur
+
+Stylesheets in `src/admin/assets/`:
+
+| Datei | Zweck |
+|-------|-------|
+| `admin.css` | Single-Entry-Point, lädt die anderen Files via `@import` in der richtigen Reihenfolge |
+| `tokens.css` | CSS-Custom-Properties (Farben, Spacing, Typo, Radius, Shadows) — SSOT für alle Werte |
+| `base.css` | Reset, Typography (h1-h4, p, links, lists, code), Utility-Klassen (`text-muted`, `mt-*`) |
+| `layout.css` | App-Header, App-Main, Page-Header, Login-Layout, Grid, Section/Subsection |
+| `components.css` | Buttons, Forms, Cards, Chips, Tables, Callouts, Toasts, Status-Block |
+
+**Konvention:** Admin-Pages (`src/admin/*.php`) laden ausschließlich `admin.css`. Keine Inline-Styles, keine page-spezifischen CSS-Files. Volle Doku: `docs/DESIGN-SYSTEM.md`.
+
+**Widget-CSS** ist davon **getrennt** — lebt inline in `src/public/widget.js` mit eigenen `.sporeprint-*`-Namespaces, weil das Widget als embedded `<script>` in fremden Shop-Templates landet und sich nicht mit deren CSS beißen darf.
+
 ## lib-Verzeichnis-Inhaltsverzeichnis
 
 `src/lib/` ist die einzige Quelle für gemeinsame Funktionalität. Jeder Helper ist hier dokumentiert. Vor neuem Helper: hier prüfen ob's das schon gibt.

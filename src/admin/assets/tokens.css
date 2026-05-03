@@ -1,0 +1,86 @@
+/* Sporeprint Admin — Design-Tokens (SSOT)
+ *
+ * Pilzling-CI uebernommen aus production-app/docs/DESIGN-SYSTEM.md.
+ * Aenderungen hier ziehen in alle Komponenten gleichzeitig — niemals
+ * Werte hardcoden, immer ueber var(--token).
+ *
+ * Hintergrund-Hierarchie (3-Tier):
+ *   Canvas (Cream) → Content (White) → Section-Hervorhebung (Cream-Dark)
+ */
+
+:root {
+    /* === Pilzling CI (offiziell) === */
+    --color-dark: #151824;            /* Text, Dark-Fills, Header */
+    --color-cream: #F2F0ED;           /* Canvas-Background */
+    --color-primary: #F85B05;         /* Orange — CTAs, Hover, Links-Hover */
+    --color-accent-blau: #AEBEE8;     /* Blau hell */
+    --color-accent-peach: #FFD8C2;    /* Peach */
+
+    /* === Von Pilzwald uebernommen === */
+    --color-cream-dark: #E3DFDA;       /* Tabellen-Header, Divider, Tertiary-BG */
+    --color-accent-gruen: #89B455;     /* Gruen hell */
+    --color-accent-gruen-dark: #507227;
+
+    /* === Abgeleitete UI-Farben (Kontrast) === */
+    --color-dark-soft: #2A2E3D;        /* Primary-Hover */
+    --color-primary-dark: #D64A00;     /* Orange-Hover */
+    --color-accent-blau-dark: #5A74B8; /* Link-Text, Buttons, Tabellen-Header */
+    --color-accent-peach-dark: #C87449;
+    --color-accent-blau-soft: #E6ECF7; /* Chip-Blau-BG, Tertiary-Hover-BG */
+    --color-accent-peach-soft: #FFE8D8;
+    --color-accent-gruen-soft: #E8F0DC;
+
+    /* === Utilities === */
+    --color-white: #FFFFFF;
+    --color-border: #E0E0E0;
+    --color-border-soft: #EDEAE6;
+    --color-text: #151824;
+    --color-text-muted: #666666;
+    --color-error: #C62828;
+    --color-error-soft: #FFEBEE;
+
+    /* === Spacing-Scale === */
+    --space-1: 0.25rem;     /*  4px */
+    --space-2: 0.5rem;      /*  8px */
+    --space-3: 0.75rem;     /* 12px */
+    --space-4: 1rem;        /* 16px */
+    --space-5: 1.5rem;      /* 24px */
+    --space-6: 2rem;        /* 32px */
+    --space-7: 3rem;        /* 48px */
+    --space-8: 4rem;        /* 64px */
+
+    /* === Typografie === */
+    --font-sans: system-ui, -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Consolas, "Liberation Mono", monospace;
+
+    --font-size-xs: 0.72rem;   /* Chips, Captions */
+    --font-size-sm: 0.85rem;   /* Labels, Meta */
+    --font-size-base: 0.9rem;  /* Body */
+    --font-size-md: 1rem;      /* Lead-Paragraphs */
+    --font-size-lg: 1.2rem;    /* H3 */
+    --font-size-xl: 1.4rem;    /* H2 */
+    --font-size-2xl: 1.6rem;   /* H1 */
+
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+
+    /* === Border / Radius === */
+    --radius-sm: 4px;
+    --radius: 6px;
+    --radius-lg: 10px;
+    --radius-pill: 999px;
+
+    /* === Shadows === */
+    --shadow-sm: 0 1px 2px rgba(21, 24, 36, 0.05);
+    --shadow-card: 0 1px 3px rgba(21, 24, 36, 0.08);
+    --shadow-lg: 0 4px 12px rgba(21, 24, 36, 0.12);
+    --shadow-focus-blau: 0 0 0 3px rgba(90, 116, 184, 0.15);
+    --shadow-focus-orange: 0 2px 6px rgba(248, 91, 5, 0.25);
+
+    /* === Layout === */
+    --container-max-width: 1080px;
+    --header-height: 56px;
+
+    /* === Transitions === */
+    --transition-fast: 0.15s ease;
+}
