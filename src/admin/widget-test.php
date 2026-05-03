@@ -19,6 +19,31 @@ $selectedShop = $_GET['shop'] ?? 'pilzling';
 if (!in_array($selectedShop, $availableShops, true)) {
     $selectedShop = 'pilzling';
 }
+
+// Embed-Mode: nur Widget rendern (für iframe in widget-config.php)
+$embedMode = isset($_GET['embed']);
+
+if ($embedMode):
+?><!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Sporeprint Widget — Embed-Vorschau</title>
+<style>
+body { margin: 0; padding: 0; background: #1a1f2e; }
+</style>
+</head>
+<body>
+<div id="sporeprint-widget"></div>
+<script src="https://sporeprint.pilzling.eu/widget.js" data-shop="<?= htmlspecialchars($selectedShop) ?>"></script>
+</body>
+</html>
+<?php
+exit;
+endif;
+?>
 ?><!DOCTYPE html>
 <html lang="de">
 <head>
