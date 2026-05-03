@@ -7,10 +7,10 @@ declare(strict_types=1);
 // Frequenz: alle 15 Min (cPanel-Cronjob)
 // Cron-Eintrag: */15 * * * * php /home/pilzling/app.reviews/_tools/cron-cleanup-rate-limits.php
 //
-// Loescht Buckets aelter als 60 Minuten (Sliding-Window-Retention).
-// Datenminimierung (DSGVO Art. 6 Abs. 1 lit. f — IP nur fuer Rate-Limit-Window).
+// Löscht Buckets älter als 60 Minuten (Sliding-Window-Retention).
+// Datenminimierung (DSGVO Art. 6 Abs. 1 lit. f — IP nur für Rate-Limit-Window).
 //
-// Sicherheits-Check: Skript darf nur via CLI laufen, niemals ueber HTTP.
+// Sicherheits-Check: Skript darf nur via CLI laufen, niemals über HTTP.
 
 if (PHP_SAPI !== 'cli') {
     http_response_code(403);

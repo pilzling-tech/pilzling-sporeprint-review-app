@@ -27,11 +27,11 @@
         return;
     }
 
-    // === Mock-Reviews fuer Phase 1. Spaeter via fetch ersetzt. ===
+    // === Mock-Reviews für Phase 1. Später via fetch ersetzt. ===
     const MOCK_REVIEWS = [
         {
             stars: 5,
-            content: 'Frische Bio-Pilze in Top-Qualitaet. Lieferung war schnell und alles war perfekt verpackt.',
+            content: 'Frische Bio-Pilze in Top-Qualität. Lieferung war schnell und alles war perfekt verpackt.',
             author: 'Marie K.',
             language: 'de',
             product_name: null,
@@ -49,7 +49,7 @@
         },
         {
             stars: 4,
-            content: 'Sehr guter Shop, schnelle Antwort auf Rueckfragen. Pilze waren frisch.',
+            content: 'Sehr guter Shop, schnelle Antwort auf Rückfragen. Pilze waren frisch.',
             author: 'Anna B.',
             language: 'de',
             product_name: null,
@@ -58,16 +58,16 @@
         },
         {
             stars: 5,
-            content: 'Kraeuterseitlinge sind erste Sahne. Bestelle definitiv wieder.',
+            content: 'Kräuterseitlinge sind erste Sahne. Bestelle definitiv wieder.',
             author: 'Jens H.',
             language: 'de',
-            product_name: 'Kraeuterseitlinge 250g',
+            product_name: 'Kräuterseitlinge 250g',
             source: 'jtl',
             posted_on: '2026-04-21',
         },
         {
             stars: 5,
-            content: 'Beste Pilze aus Koeln. Habe schon mehrere Kollegen darauf aufmerksam gemacht.',
+            content: 'Beste Pilze aus Köln. Habe schon mehrere Kollegen darauf aufmerksam gemacht.',
             author: 'Petra S.',
             language: 'de',
             product_name: null,
@@ -243,7 +243,7 @@
         link.href = 'https://sporeprint.pilzling.eu/';
         link.target = '_blank';
         link.rel = 'noopener';
-        link.title = 'Sporeprint — der Sporenabdruck einer Marke. Reviews als unverfaelschter Abdruck der Kund:innen-Erfahrung.';
+        link.title = 'Sporeprint — der Sporenabdruck einer Marke. Reviews als unverfälschter Abdruck der Kund:innen-Erfahrung.';
         link.textContent = 'powered by Sporeprint';
         footer.appendChild(link);
         container.appendChild(footer);

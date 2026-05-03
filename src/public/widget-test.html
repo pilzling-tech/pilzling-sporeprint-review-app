@@ -59,7 +59,7 @@ p.intro {
 <body>
 <div class="test-container">
     <h1>Sporeprint Widget — Test-Seite</h1>
-    <p class="intro">Lokale Test-Seite fuers Widget. Phase 1 nutzt hardcoded Mock-Reviews — die Carousel-Darstellung und das Footer-Branding sollten korrekt rendern.</p>
+    <p class="intro">Lokale Test-Seite fürs Widget. Phase 1 nutzt hardcoded Mock-Reviews — die Carousel-Darstellung und das Footer-Branding sollten korrekt rendern.</p>
 
     <div class="note">
         <strong>Hinweis:</strong> Diese Seite ist nicht im JTL-Shop eingebettet — Referer-Check und CORS greifen nicht aktiv (Widget liefert sofort Mock-Data). Nach Phase 2 (API-Anbindung) wird das Widget echte Daten von <code>/api/reviews?shop=...</code> ziehen, dann muss der Test im echten Shop-Kontext erfolgen.
@@ -78,7 +78,7 @@ p.intro {
     <script id="sporeprint-loader" src="/widget.js" data-shop="pilzling"></script>
 
     <script>
-        // Shop-Switcher fuer Test
+        // Shop-Switcher für Test
         document.querySelectorAll('.shop-buttons button').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.shop-buttons button').forEach(b => b.classList.remove('active'));

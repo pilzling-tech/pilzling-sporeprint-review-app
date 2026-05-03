@@ -1,23 +1,23 @@
 <?php
 declare(strict_types=1);
 
-// Sporeprint Public-API: Reviews-Liste fuer ein Shop.
+// Sporeprint Public-API: Reviews-Liste für ein Shop.
 //
 // Aufruf: GET /api/reviews?shop=<shop_id>
 // Response: pures JSON-Array (kein Envelope) — siehe ARCHITEKTUR.md
 //          "API-Response-Konvention" und "API-Endpoint-Verzeichnis".
 //
-// Aktueller Stand (Phase 1): Endpoint laeuft die volle Haertungs-Pipeline
+// Aktueller Stand (Phase 1): Endpoint läuft die volle Härtungs-Pipeline
 // durch und liefert das gefilterte Reviews-Array aus DB. Da noch keine
 // Cron-Skripte laufen, ist die Tabelle leer → Response ist "[]".
-// Ab Phase API-Anbindung wird die Tabelle gefuellt — Endpoint bleibt
-// unveraendert.
+// Ab Phase API-Anbindung wird die Tabelle gefüllt — Endpoint bleibt
+// unverändert.
 
 require_once __DIR__ . '/../../lib/public_api_guard.php';
 require_once __DIR__ . '/../../lib/db.php';
 require_once __DIR__ . '/../../lib/helpers.php';
 
-// === Layer 1-5 Haertung als allererste inhaltliche Zeile ===
+// === Layer 1-5 Härtung als allererste inhaltliche Zeile ===
 // Bei Fail: enforcePublicApiHardening() schickt selbst die Response + exit.
 $ctx = enforcePublicApiHardening($_GET['shop'] ?? '');
 $shopId = $ctx['shop_id'];
@@ -43,7 +43,7 @@ $maxItems = (int) $widgetConfig['max_items'];
 $includeProductReviews = (int) $widgetConfig['show_product_reviews'] === 1;
 
 // === Reviews lesen — Datenminimierung (Layer 6) bereits in SELECT-Liste ===
-// Whitelist der Felder gemaess ARCHITEKTUR.md "Was tatsaechlich im
+// Whitelist der Felder gemäß ARCHITEKTUR.md "Was tatsächlich im
 // Widget-Response steht":
 //   stars, content, author, language, product_name, source, posted_at (Tag-genau)
 // Niemals: IP/Geo/Email/exakte-Timestamps/interne IDs.

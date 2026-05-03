@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-// Sporeprint — Public-API-Haertung (SSOT).
-// Implementiert die Layer 1-4 der 6 Haertungs-Schichten aus Konzept Thema 4
+// Sporeprint — Public-API-Härtung (SSOT).
+// Implementiert die Layer 1-4 der 6 Härtungs-Schichten aus Konzept Thema 4
 // (Layer 5 SRI ist client-side, Layer 6 Datenminimierung ist Endpoint-
 // Verantwortung).
 //
@@ -20,14 +20,14 @@ require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/rate_limit.php';
 
 /**
- * Konstanten fuer die Haertungs-Schichten.
+ * Konstanten für die Härtungs-Schichten.
  */
 const PUBLIC_API_RATE_LIMIT_PER_MINUTE = 60;
 const PUBLIC_API_RATE_LIMIT_WINDOW_MIN = 1;
 const PUBLIC_API_CACHE_MAX_AGE_SEC = 21600; // 6h, gleicher Rhythmus wie Cron
 
 /**
- * Erzwingt alle Public-API-Haertungs-Layer in der richtigen Reihenfolge:
+ * Erzwingt alle Public-API-Härtungs-Layer in der richtigen Reihenfolge:
  *   1) Shop-ID validieren (existiert in DB?)
  *   2) CORS-Header setzen (dynamisch nach Shop-Domain)
  *   3) Referer-Check (Aufruf muss von Shop-Domain kommen)
@@ -37,7 +37,7 @@ const PUBLIC_API_CACHE_MAX_AGE_SEC = 21600; // 6h, gleicher Rhythmus wie Cron
  * Bei Fail: schickt sofortige Response + exit. Aufrufer muss nichts mehr tun.
  *
  * @param string $shopId  Shop-ID aus Request (z.B. $_GET['shop'])
- * @return array{shop_id: string, shop_row: array}  Bei Erfolg: Shop-Metadaten fuer Endpoint-Logik
+ * @return array{shop_id: string, shop_row: array}  Bei Erfolg: Shop-Metadaten für Endpoint-Logik
  */
 function enforcePublicApiHardening(string $shopId): array
 {
@@ -64,14 +64,14 @@ function enforcePublicApiHardening(string $shopId): array
     }
 
     // === Layer 2: CORS-Whitelist ===
-    // Allow-Origin nur fuer die exakte Shop-Domain (https-Variante).
+    // Allow-Origin nur für die exakte Shop-Domain (https-Variante).
     $allowedOrigin = 'https://' . $shop['domain'];
     $requestOrigin = $_SERVER['HTTP_ORIGIN'] ?? '';
     if ($requestOrigin !== '' && $requestOrigin === $allowedOrigin) {
         header('Access-Control-Allow-Origin: ' . $allowedOrigin);
         header('Vary: Origin');
     }
-    // Preflight-Methoden: nur GET noetig fuer Public-API
+    // Preflight-Methoden: nur GET nötig für Public-API
     header('Access-Control-Allow-Methods: GET, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type');
 
@@ -102,7 +102,7 @@ function enforcePublicApiHardening(string $shopId): array
     try {
         $ipBinary = binaryIp(clientIp());
     } catch (RuntimeException $e) {
-        // Ungueltige IP — sicherheitshalber durchlassen aber nicht raten,
+        // Ungültige IP — sicherheitshalber durchlassen aber nicht raten,
         // damit kein Bug im IP-Parser einen Endpoint-DoS verursacht.
         $ipBinary = null;
     }

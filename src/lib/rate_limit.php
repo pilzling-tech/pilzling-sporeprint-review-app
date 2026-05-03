@@ -7,23 +7,23 @@ declare(strict_types=1);
 // references/php-patterns/public-api-hardening/ als Workspace-SSOT.
 //
 // Implementierung: pro Minute eine Zeile pro IP in rate_limits-Tabelle.
-// checkRateLimit() inkrementiert den Counter fuer aktuelle Minute und
+// checkRateLimit() inkrementiert den Counter für aktuelle Minute und
 // summiert die letzten N Minuten.
-// Cleanup: _tools/cron-cleanup-rate-limits.php purged Buckets aelter als 1h.
+// Cleanup: _tools/cron-cleanup-rate-limits.php purged Buckets älter als 1h.
 
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/helpers.php';
 
 /**
- * Prueft Rate-Limit fuer eine IP. Gibt true zurueck wenn die Anfrage
- * im erlaubten Limit liegt, false wenn ueberschritten.
+ * Prüft Rate-Limit für eine IP. Gibt true zurück wenn die Anfrage
+ * im erlaubten Limit liegt, false wenn überschritten.
  *
- * Inkrementiert immer (auch bei Ueberschreitung) — sonst koennte ein
+ * Inkrementiert immer (auch bei Überschreitung) — sonst könnte ein
  * Angreifer mit konstantem Polling den Counter "festhalten".
  *
  * @param string $ipBinary  IP als 16-Byte-Binary (siehe binaryIp())
  * @param int $limitPerMinute  Max. Requests pro Zeitfenster
- * @param int $windowMinutes  Fenstergroesse in Minuten (1 = pure Aktuelle-Minute)
+ * @param int $windowMinutes  Fenstergröße in Minuten (1 = pure aktuelle-Minute)
  */
 function checkRateLimit(string $ipBinary, int $limitPerMinute = 60, int $windowMinutes = 1): bool
 {
@@ -38,7 +38,7 @@ function checkRateLimit(string $ipBinary, int $limitPerMinute = 60, int $windowM
         [$ipBinary, $currentBucket]
     );
 
-    // Summe ueber das gesamte Fenster
+    // Summe über das gesamte Fenster
     $row = dbQueryOne(
         "SELECT COALESCE(SUM(request_count), 0) AS total
          FROM rate_limits

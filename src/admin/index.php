@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Generischer Error — niemals verraten ob User oder Passwort falsch war
-    $loginError = 'Login nicht moeglich. Pruefe Benutzername und Passwort.';
+    $loginError = 'Login nicht möglich. Prüfe Benutzername und Passwort.';
 }
 
 $csrfToken = csrfToken();

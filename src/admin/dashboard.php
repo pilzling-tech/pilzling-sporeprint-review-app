@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 // Sporeprint Admin — Dashboard-Layout-Stub.
-// Phase 1: nur Layout, keine Funktionen. Phase 3 fuellt die Karten mit
+// Phase 1: nur Layout, keine Funktionen. Phase 3 füllt die Karten mit
 // Reviews-Liste, Reply-Funktion, Analytics, Widget-Konfigurator, QR-Generator.
 
 require_once __DIR__ . '/../lib/auth.php';
@@ -13,7 +13,7 @@ requireLogin();
 
 $user = currentUser();
 
-// Phase-1-Status fuer den Dashboard-Statusblock — informativ.
+// Phase-1-Status für den Dashboard-Statusblock — informativ.
 $shopCount = (int) (dbQueryOne("SELECT COUNT(*) AS n FROM shops")['n'] ?? 0);
 $reviewCount = (int) (dbQueryOne("SELECT COUNT(*) AS n FROM reviews")['n'] ?? 0);
 $lastSync = dbQueryOne(
@@ -54,7 +54,7 @@ $lastSync = dbQueryOne(
         <h2>Phase 1 — Foundation</h2>
         <ul>
             <li class="status-ok">Backend-Helper (lib/) live</li>
-            <li class="status-ok">Public-API-Endpoint <code>/api/reviews</code> mit Haertung aktiv</li>
+            <li class="status-ok">Public-API-Endpoint <code>/api/reviews</code> mit Härtung aktiv</li>
             <li class="status-ok">Admin-Login + Session</li>
             <li class="status-ok">Schema v1 eingespielt — <?= $shopCount ?> Shops konfiguriert, <?= $reviewCount ?> Reviews in DB</li>
             <li class="status-pending">Google Reviews-API wartet auf Freigabe</li>
@@ -77,12 +77,12 @@ $lastSync = dbQueryOne(
 
         <div class="grid grid--2">
             <article class="card card--stub">
-                <h3>Reviews-Uebersicht</h3>
+                <h3>Reviews-Übersicht</h3>
                 <p class="text-muted">Filter nach Plattform, Shop, Sternanzahl, Datum. Direkt aus der Liste antworten.</p>
             </article>
             <article class="card card--stub">
                 <h3>Antworten verwalten</h3>
-                <p class="text-muted">Reply auf Google / Trustpilot per API zurueckpushen. Status-Tracking pro Antwort.</p>
+                <p class="text-muted">Reply auf Google / Trustpilot per API zurückpushen. Status-Tracking pro Antwort.</p>
             </article>
             <article class="card card--stub">
                 <h3>Analytics</h3>
@@ -94,11 +94,11 @@ $lastSync = dbQueryOne(
             </article>
             <article class="card card--stub">
                 <h3>QR-Code-Generator</h3>
-                <p class="text-muted">QR-Codes fuer Verpackung, Marktstand, etc. — fuehren direkt zur Bewertungsseite.</p>
+                <p class="text-muted">QR-Codes für Verpackung, Marktstand, etc. — führen direkt zur Bewertungsseite.</p>
             </article>
             <article class="card card--stub">
                 <h3>Shop-Switcher</h3>
-                <p class="text-muted">Pilzling / Pilzwald / Shroom Boom — alles in einer Oberflaeche, Multi-Tenant.</p>
+                <p class="text-muted">Pilzling / Pilzwald / Shroom Boom — alles in einer Oberfläche, Multi-Tenant.</p>
             </article>
         </div>
     </section>

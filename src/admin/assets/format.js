@@ -1,15 +1,15 @@
 /* Sporeprint Admin — Format-Helper (SSOT)
  *
  * SYNC-PAIR: PHP-Pendants in src/lib/helpers.php (formatDate, humanTimeDiff).
- * Beide muessen synchron bleiben (gleiche Schwellwerte, gleiche Labels).
+ * Beide müssen synchron bleiben (gleiche Schwellwerte, gleiche Labels).
  *
  * Konvention (in CLAUDE.md "Harte Regeln" verankert):
  *   - Niemals toLocaleDateString() / toLocaleString() direkt in Page-JS
  *   - Niemals new Intl.DateTimeFormat(...) direkt
- *   - Immer ueber AppFormat.* gehen
+ *   - Immer über AppFormat.* gehen
  *
  * Lade-Reihenfolge: VOR allen anderen Page-JS-Modulen (in <head> oder
- * frueh im Body). Aktuell wird das Skript in Phase 1 noch nicht von
+ * früh im Body). Aktuell wird das Skript in Phase 1 noch nicht von
  * Pages geladen — wird erstmals genutzt sobald die ersten Admin-JS-
  * Komponenten in Phase 3 dazukommen.
  */
@@ -19,7 +19,7 @@
     /**
      * Parst ISO-String oder Date-Objekt in ein Date.
      * Akzeptiert "2026-04-12", "2026-04-12 14:30:00", "2026-04-12T14:30:00".
-     * Bei ungueltigem Input: null.
+     * Bei ungültigem Input: null.
      */
     function parseIso(input) {
         if (!input) return null;
@@ -35,7 +35,7 @@
     const AppFormat = {
         /**
          * Datum: TT.MM.JJJJ.
-         * Bei ungueltigem Input: "–".
+         * Bei ungültigem Input: "–".
          */
         date(iso) {
             const d = parseIso(iso);

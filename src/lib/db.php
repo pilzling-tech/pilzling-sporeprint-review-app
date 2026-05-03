@@ -2,17 +2,17 @@
 declare(strict_types=1);
 
 // Sporeprint — DB-Zugriff (SSOT).
-// Wrapper um config/database.php damit alle Endpoints uniformiert ueber
+// Wrapper um config/database.php damit alle Endpoints uniformiert über
 // lib/ gehen (Konvention aus CLAUDE.md "Harte Regeln" → SSOT-Prinzip Code).
 //
-// Pattern uebernommen aus production-app/src/config/database.php (Pre-Check A1)
+// Pattern übernommen aus production-app/src/config/database.php (Pre-Check A1)
 // und auf englische Identifier angepasst.
 
 require_once __DIR__ . '/../config/database.php';
 
 /**
- * Convenience-Wrapper fuer prepared SELECT-Queries.
- * Gibt alle Zeilen zurueck (FETCH_ASSOC).
+ * Convenience-Wrapper für prepared SELECT-Queries.
+ * Gibt alle Zeilen zurück (FETCH_ASSOC).
  */
 function dbQueryAll(string $sql, array $params = []): array
 {
@@ -22,8 +22,8 @@ function dbQueryAll(string $sql, array $params = []): array
 }
 
 /**
- * Convenience-Wrapper fuer prepared SELECT-Queries die genau eine Zeile
- * (oder keine) erwarten. Gibt das Row-Array oder null zurueck.
+ * Convenience-Wrapper für prepared SELECT-Queries die genau eine Zeile
+ * (oder keine) erwarten. Gibt das Row-Array oder null zurück.
  */
 function dbQueryOne(string $sql, array $params = []): ?array
 {
@@ -34,8 +34,8 @@ function dbQueryOne(string $sql, array $params = []): ?array
 }
 
 /**
- * Convenience-Wrapper fuer prepared INSERT/UPDATE/DELETE.
- * Gibt die affected-row-Anzahl zurueck.
+ * Convenience-Wrapper für prepared INSERT/UPDATE/DELETE.
+ * Gibt die affected-row-Anzahl zurück.
  */
 function dbExec(string $sql, array $params = []): int
 {

@@ -1,8 +1,8 @@
 /* Sporeprint Admin — Design-Tokens (SSOT)
  *
- * Pilzling-CI uebernommen aus production-app/docs/DESIGN-SYSTEM.md.
- * Aenderungen hier ziehen in alle Komponenten gleichzeitig — niemals
- * Werte hardcoden, immer ueber var(--token).
+ * Pilzling-CI übernommen aus production-app/docs/DESIGN-SYSTEM.md.
+ * Änderungen hier ziehen in alle Komponenten gleichzeitig — niemals
+ * Werte hardcoden, immer über var(--token).
  *
  * Hintergrund-Hierarchie (3-Tier):
  *   Canvas (Cream) → Content (White) → Section-Hervorhebung (Cream-Dark)
@@ -16,7 +16,7 @@
     --color-accent-blau: #AEBEE8;     /* Blau hell */
     --color-accent-peach: #FFD8C2;    /* Peach */
 
-    /* === Von Pilzwald uebernommen === */
+    /* === Von Pilzwald übernommen === */
     --color-cream-dark: #E3DFDA;       /* Tabellen-Header, Divider, Tertiary-BG */
     --color-accent-gruen: #89B455;     /* Gruen hell */
     --color-accent-gruen-dark: #507227;
@@ -50,7 +50,7 @@
     --space-8: 4rem;        /* 64px */
 
     /* === Typografie ===
-     * Rubik ist Pilzling-CI-Font (uebernommen aus production-app, self-hosted via @font-face).
+     * Rubik ist Pilzling-CI-Font (übernommen aus production-app, self-hosted via @font-face).
      * Fallback-Stack falls Font nicht geladen werden kann.
      */
     --font-sans: "Rubik", system-ui, -apple-system, "Segoe UI", "Helvetica Neue", sans-serif;

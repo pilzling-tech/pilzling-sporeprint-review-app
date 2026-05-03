@@ -6,7 +6,7 @@
  *   3. layout.css       — App-Header, App-Main, Login-Layout
  *   4. components.css   — Buttons, Forms, Cards, Chips, Tables, Callouts, Toasts
  *
- * Bei neuen Komponenten: in components.css ergaenzen, NIEMALS in
+ * Bei neuen Komponenten: in components.css ergänzen, NIEMALS in
  * page-spezifische Inline-Styles verfallen (siehe SSOT-Prinzip Code in CLAUDE.md).
  *
  * Volle Doku der Konventionen: docs/DESIGN-SYSTEM.md

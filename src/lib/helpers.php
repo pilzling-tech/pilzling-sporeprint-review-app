@@ -3,17 +3,17 @@ declare(strict_types=1);
 
 // Sporeprint — gemeinsame Helper-Funktionen (SSOT).
 //
-// API-Response-Pattern uebernommen aus production-app/src/includes/helpers.php
-// (Pre-Check A3, A4) — angepasst fuer Sporeprints API-Konvention:
+// API-Response-Pattern übernommen aus production-app/src/includes/helpers.php
+// (Pre-Check A3, A4) — angepasst für Sporeprints API-Konvention:
 //   - Public API: pures Reviews-Array (kein Envelope) → jsonResponse()
 //   - Admin API: {ok, data} / {ok, error} → apiSuccess() / apiError()
 // Siehe docs/ARCHITEKTUR.md → "API-Response-Konvention".
 
 /**
- * Sendet JSON-Response mit korrektem Header und beendet die Ausfuehrung.
+ * Sendet JSON-Response mit korrektem Header und beendet die Ausführung.
  *
- * JSON_INVALID_UTF8_SUBSTITUTE: ersetzt ungueltige Bytes durch U+FFFD,
- * statt dass json_encode leer zurueckkommt (z.B. bei Binary-Feldern).
+ * JSON_INVALID_UTF8_SUBSTITUTE: ersetzt ungültige Bytes durch U+FFFD,
+ * statt dass json_encode leer zurückkommt (z.B. bei Binary-Feldern).
  */
 function jsonResponse($data, int $status = 200): void
 {
@@ -31,7 +31,7 @@ function jsonResponse($data, int $status = 200): void
 /**
  * Admin-API-Erfolgsantwort. Wrappt $data in {ok: true, data: ...}.
  *
- * Nur fuer Admin-Endpoints. Public-API nutzt jsonResponse() direkt
+ * Nur für Admin-Endpoints. Public-API nutzt jsonResponse() direkt
  * mit purem Array — siehe docs/ARCHITEKTUR.md.
  */
 function apiSuccess($data = null, int $status = 200): void
@@ -47,7 +47,7 @@ function apiSuccess($data = null, int $status = 200): void
  * Server-Fehler. Default 400.
  *
  * $message wird vom Frontend direkt als Toast-Text angezeigt — daher
- * kurz und nutzer-verstaendlich (auf Deutsch).
+ * kurz und nutzer-verständlich (auf Deutsch).
  */
 function apiError(string $message, int $status = 400): void
 {
@@ -55,18 +55,18 @@ function apiError(string $message, int $status = 400): void
 }
 
 /**
- * Konvertiert IPv4- oder IPv6-String in 16-Byte-Binary fuer rate_limits.ip_address.
+ * Konvertiert IPv4- oder IPv6-String in 16-Byte-Binary für rate_limits.ip_address.
  *
  * IPv4 wird als IPv4-mapped-IPv6 gespeichert (16 Byte Layout
- * konsistent ueber alle Eintraege). Inverse Operation: inet_ntop().
+ * konsistent über alle Einträge). Inverse Operation: inet_ntop().
  *
- * Bei ungueltigem Input → throws RuntimeException.
+ * Bei ungültigem Input → throws RuntimeException.
  */
 function binaryIp(string $ipString): string
 {
     $packed = @inet_pton($ipString);
     if ($packed === false) {
-        throw new RuntimeException("Ungueltige IP-Adresse: {$ipString}");
+        throw new RuntimeException("Ungültige IP-Adresse: {$ipString}");
     }
     // IPv4 (4 Byte) auf IPv4-mapped-IPv6 (16 Byte) padden
     if (strlen($packed) === 4) {
@@ -76,7 +76,7 @@ function binaryIp(string $ipString): string
 }
 
 /**
- * Liest die echte Client-IP aus dem Request — beruecksichtigt typische
+ * Liest die echte Client-IP aus dem Request — berücksichtigt typische
  * Reverse-Proxy-Header. Auf Server Profis cPanel sollte normalerweise
  * REMOTE_ADDR direkt korrekt sein (kein Cloudflare davor).
  *
@@ -97,19 +97,19 @@ function clientIp(): string
 // =====================================================================
 // FORMAT-HELPER (SSOT — siehe docs/DESIGN-SYSTEM.md "Format-Standards")
 //
-// Pattern aus production-app/src/includes/helpers.php uebernommen
+// Pattern aus production-app/src/includes/helpers.php übernommen
 // (Pre-Check A3 erweitert um diese Helper). Konvention:
 //   - Niemals date() / strftime() / toLocaleString() direkt im View-Code
 //   - Niemals number_format() direkt im View-Code
 //   - Immer formatDate() / humanTimeDiff() benutzen
 //
-// JS-Pendants in src/admin/assets/format.js — beide muessen synchron bleiben.
+// JS-Pendants in src/admin/assets/format.js — beide müssen synchron bleiben.
 // =====================================================================
 
 /**
  * Datum formatieren — TT.MM.JJJJ oder TT.MM.JJJJ, HH:MM.
  * Akzeptiert ISO-Strings ('2026-04-12', '2026-04-12 14:30:00', '2026-04-12T14:30:00').
- * Bei null/leer/ungueltig: "–" (Em-Dash).
+ * Bei null/leer/ungültig: "–" (Em-Dash).
  */
 function formatDate(?string $iso, bool $mitUhrzeit = false): string
 {
@@ -125,7 +125,7 @@ function formatDate(?string $iso, bool $mitUhrzeit = false): string
  * Menschenlesbare Zeitdifferenz: "gerade eben", "vor 5 Min", "vor 3h", "vor 2 Tagen".
  *
  * SYNC-PAIR: JS-Pendant in src/admin/assets/format.js → AppFormat.relative().
- * Beide muessen synchron bleiben (gleiche Schwellwerte, gleiche Labels).
+ * Beide müssen synchron bleiben (gleiche Schwellwerte, gleiche Labels).
  */
 function humanTimeDiff(string $datetime): string
 {

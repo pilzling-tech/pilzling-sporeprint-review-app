@@ -2,7 +2,7 @@
 // MariaDB-Verbindung (pilzling_reviews_app auf Server Profis)
 // Pattern uebernommen aus production-app/src/config/database.php (Pre-Check A1).
 
-// Timezone setzen — Server laeuft auf UTC, wir wollen aber deutsche lokale Zeit
+// Timezone setzen — Server läuft auf UTC, wir wollen aber deutsche lokale Zeit
 date_default_timezone_set('Europe/Berlin');
 
 function loadEnv(): void {
@@ -23,7 +23,7 @@ function loadEnv(): void {
         if (!preg_match('/^["\']/', $value) && str_contains($value, '#')) {
             $value = trim(explode('#', $value, 2)[0]);
         }
-        // Umschliessende Quotes entfernen
+        // Umschließende Quotes entfernen
         if (preg_match('/^(["\'])(.*)\1$/', $value, $m)) {
             $value = $m[2];
         }

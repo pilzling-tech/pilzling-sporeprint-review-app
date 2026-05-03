@@ -4,7 +4,7 @@
  * SSOT: jede Komponente nur hier styled, niemals lokal in einer
  * Page-Datei oder Inline-Style.
  *
- * Pattern uebernommen aus production-app/docs/DESIGN-SYSTEM.md.
+ * Pattern übernommen aus production-app/docs/DESIGN-SYSTEM.md.
  */
 
 /* =====================================================================
@@ -390,7 +390,7 @@ input.is-invalid:focus {
     font-size: var(--font-size-sm);
 }
 
-/* === Spaltenbreiten-Standard (3 Kategorien — uebernommen aus production-app) ===
+/* === Spaltenbreiten-Standard (3 Kategorien — übernommen aus production-app) ===
  *
  * Klassen auf <th> UND <td> setzen. Browser verteilt den Platz:
  * Fix-Spalten haben harte Breite, Kompakt-Spalten flexen in einem Bereich,
@@ -416,7 +416,7 @@ input.is-invalid:focus {
 /* === Texuberlauf-Standard ===
  * Alle Tabellen-Zellen einzeilig. Lange Inhalte (Review-Text, Antworten)
  * werden mit Ellipsis abgeschnitten; voller Inhalt im title-Attribut
- * fuer Hover-Tooltip.
+ * für Hover-Tooltip.
  */
 .data-table td {
     overflow: hidden;
