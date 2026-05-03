@@ -322,8 +322,8 @@ Wird laufend gepflegt. Jeder neue Endpoint muss hier eingetragen werden (siehe S
 
 | Pfad | Methode | Schutz | Zweck |
 |------|---------|--------|-------|
+| `/` (`index.php`) | GET | keiner | Stub-Seite, Inline-CSS mit Sync-Pflicht-Kommentar |
 | `/widget.js` | GET | keiner (statisches Asset) | Widget-Loader, embedbar im JTL-Shop |
-| `/widget-test.html` | GET | keiner | Lokale Test-Seite für widget.js |
 | `/api/reviews?shop=<id>` | GET | `enforcePublicApiHardening()` (alle 6 Layer) | Reviews-Liste für Widget, gefiltert nach `widget_configs` |
 
 ### Admin Endpoints (`src/admin/`)
@@ -333,6 +333,7 @@ Wird laufend gepflegt. Jeder neue Endpoint muss hier eingetragen werden (siehe S
 | `/index.php` | GET, POST | keiner (Login-Form) — cPanel-Verzeichnisschutz greift davor | Login-Seite mit CSRF |
 | `/logout.php` | GET | keiner | Session zerstören, Redirect zu Login |
 | `/dashboard.php` | GET | `requireLogin()` | Admin-Übersicht (Phase 1: Layout-Stub, Phase 3: voll funktional) |
+| `/widget-test.php` | GET | `requireLogin()` | Live-Test des Widgets ohne JTL-Embedding (intern) |
 | `/oauth/google/callback.php` | GET | keiner (OAuth-Callback) — eigene Pfad-Validierung | Google-OAuth-Redirect-Endpoint (Phase Google-API) |
 | `/api/reply.php` | POST | `requireLogin()` + CSRF | Antwort auf Review verfassen + an Quelle pushen (Phase 3) |
 
