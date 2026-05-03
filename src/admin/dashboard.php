@@ -38,6 +38,7 @@ $lastSync = dbQueryOne(
     <a href="/dashboard.php" class="app-header__brand">Sporeprint</a>
     <nav class="app-header__nav">
         <a href="/dashboard.php" class="is-active">Dashboard</a>
+        <a href="/widget-test.php">Widget-Vorschau</a>
     </nav>
     <div class="app-header__user">
         <span><?= htmlspecialchars($user ?? '') ?></span>
@@ -73,6 +74,10 @@ $lastSync = dbQueryOne(
     <section class="section">
         <div class="subsection-header">
             <h2>Funktions-Bereiche</h2>
+        </div>
+
+        <div class="callout callout--info">
+            <strong>Hinweis:</strong> Die Funktions-Bereiche sind noch in Entwicklung und werden mit <strong>Phase 3</strong> aktiv. Klick auf einen Bereich liefert aktuell 404.
         </div>
 
         <div class="grid grid--2">

@@ -34,7 +34,7 @@ if (!in_array($selectedShop, $availableShops, true)) {
     <a href="/dashboard.php" class="app-header__brand">Sporeprint</a>
     <nav class="app-header__nav">
         <a href="/dashboard.php">Dashboard</a>
-        <a href="/widget-test.php" class="is-active">Widget-Test</a>
+        <a href="/widget-test.php" class="is-active">Widget-Vorschau</a>
     </nav>
     <div class="app-header__user">
         <span><?= htmlspecialchars($user ?? '') ?></span>
@@ -44,7 +44,7 @@ if (!in_array($selectedShop, $availableShops, true)) {
 
 <main class="app-main">
     <div class="page-header">
-        <h1>Widget-Test</h1>
+        <h1>Widget-Vorschau</h1>
     </div>
 
     <div class="callout callout--info">
