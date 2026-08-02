@@ -5,12 +5,13 @@
 
 ## Quick Context
 
-Eigenes Review-Management-System für drei JTL-Shops (Pilzling, Pilzwald, Shroom Boom). Aggregiert Google-, Trustpilot- und JTL-Produktbewertungen in ein Widget + Admin-Dashboard. Ersetzt onlinereviews.tech (80 €/Monat → 0 €/Monat). Genutzt intern (Admin-Dashboard für CV) und im Frontend der drei Shops (Widget mit Sporeprint-Branding).
+Eigenes Review-Management-System für drei JTL-Shops (Pilzling, Pilzwald, Shroom Boom). Aggregiert Google-, Trusted-Shops- und JTL-Produktbewertungen in ein Widget + Admin-Dashboard. Ersetzt onlinereviews.tech (80 €/Monat → 0 €/Monat). Genutzt intern (Admin-Dashboard für CV) und im Frontend der drei Shops (Widget mit Sporeprint-Branding).
 
 ## Status
 
 Gestartet: März 2026 | Stack: **in Klärung** (Architektur-Pivot Vercel → Server Profis + MariaDB + PHP läuft, siehe Konzept)
 Aktuelle Stufe: **Konzept (Stufe 1)** — `_plans/2026-05-02-architektur-pivot-konzept.md`
+standard_version: 3.2
 
 ## Infrastruktur
 
@@ -20,7 +21,7 @@ Aktuelle Stufe: **Konzept (Stufe 1)** — `_plans/2026-05-02-architektur-pivot-k
 - **Public Subdomain (Widget + Public-API):** `sporeprint.pilzling.eu`
 - **Admin Subdomain:** `admin-sporeprint.pilzling.eu` (cPanel-Verzeichnisschutz davor)
 - **Widget-Einbindung:** `<script src="https://sporeprint.pilzling.eu/widget.js" data-shop="..." integrity="...">` in jedem JTL-Template
-- **Externe APIs:** Google Business Profile API (OAuth), Trustpilot Business Units API, JTL REST API
+- **Externe APIs:** Google Business Profile API (OAuth), Trusted Shops Reviews API, JTL REST API
 - **E-Mail-Automation:** Brevo (bestehender Account, keine eigene Mail-Schicht)
 - **Versionierung:** GitHub (privates Repo — noch nicht angelegt)
 - **Credentials:** Bitwarden → Ordner "Webserver & Domain" + Vercel Environment Variables je Shop
@@ -145,7 +146,7 @@ Das Widget muss in JTL-Shop-Templates einbettbar sein — als einzeiliger `<scri
 
 ### Credentials
 
-Keine API-Keys (Google, Trustpilot) und keine DB-Credentials im Code. Lokal in `.env` im Repo-Stamm (NICHT committed, in `.gitignore`), auf dem Server in `app.reviews/config/.env` (auch nicht im Repo). Verzeichnisschutz auf Admin-Subdomain + `.htaccess`-Block für `.env*`-Dateien als Defense-in-Depth.
+Keine API-Keys (Google, Trusted Shops) und keine DB-Credentials im Code. Lokal in `.env` im Repo-Stamm (NICHT committed, in `.gitignore`), auf dem Server in `app.reviews/config/.env` (auch nicht im Repo). Verzeichnisschutz auf Admin-Subdomain + `.htaccess`-Block für `.env*`-Dateien als Defense-in-Depth.
 
 ### Pattern-Übernahme aus production-app
 
