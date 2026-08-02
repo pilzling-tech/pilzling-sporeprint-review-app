@@ -33,7 +33,7 @@ Eigenes Review-Aggregations- und Management-System für drei JTL-Shops (Pilzling
 | TLS | Let's Encrypt via cPanel AutoSSL | 0 € |
 | E-Mail-Automation | Brevo (bestehender Account) | 0 € extra |
 | Google Reviews | Google Business Profile API (OAuth 2.0) | 0 € |
-| Trustpilot Reviews | Trustpilot Public API (eventuell Business-Plan-Upgrade in Zukunft) | 0 € (TBD) |
+| Trusted Shops Reviews | Trusted Shops Public API (eventuell Business-Plan-Upgrade in Zukunft) | 0 € (TBD) |
 | JTL Produktbewertungen | **zurückgestellt** — später via direkt-SQL aus JTL-MSSQL-DB | 0 € |
 
 **Gesamt laufend: 0 €/Monat** (vs. 80 €/Monat bisher onlinereviews.tech).
@@ -69,7 +69,7 @@ Eigenes Review-Aggregations- und Management-System für drei JTL-Shops (Pilzling
 │  Pfad: /home/pilzling/app.reviews/_tools/                    │
 │                                                              │
 │  · cron-fetch-google.php       (3 Shops)                     │
-│  · cron-fetch-trustpilot.php   (3 Shops)                     │
+│  · cron-fetch-trusted-shops.php (3 Shops)                    │
 │  · cron-fetch-jtl.php          (zurückgestellt — später)     │
 │  · cron-cleanup-rate-limits.php (alte Buckets purgen)        │
 └──────────────────────────────────────────────────────────────┘
@@ -116,7 +116,7 @@ Eigenes Review-Aggregations- und Management-System für drei JTL-Shops (Pilzling
 │   ├── helpers.php                                 ← apiSuccess/apiError/jsonResponse
 │   ├── api_clients/
 │   │   ├── google.php
-│   │   └── trustpilot.php
+│   │   └── trusted_shops.php
 │   └── rate_limit.php
 ├── config/
 │   ├── database.php                                ← getDb() + loadEnv()
@@ -126,7 +126,7 @@ Eigenes Review-Aggregations- und Management-System für drei JTL-Shops (Pilzling
 │   └── schema_vN.sql                               ← fortlaufend nummeriert
 └── _tools/                                          ← Cron-Skripte (CLI), nicht über HTTP
     ├── cron-fetch-google.php
-    ├── cron-fetch-trustpilot.php
+    ├── cron-fetch-trusted-shops.php
     └── cron-cleanup-rate-limits.php
 ```
 
@@ -144,7 +144,7 @@ shops (
   name               VARCHAR(128) NOT NULL,
   domain             VARCHAR(128) NOT NULL,                -- "pilzling.shop"
   google_place_id    VARCHAR(64)  NULL,
-  trustpilot_unit_id VARCHAR(64)  NULL,
+  trusted_shops_id   VARCHAR(64)  NULL,
   jtl_api_url        VARCHAR(255) NULL,                    -- vorerst nicht genutzt (JTL zurückgestellt)
   ci_primary         VARCHAR(7)   NULL,                    -- "#7a4f1a"
   ci_secondary       VARCHAR(7)   NULL,
@@ -158,7 +158,7 @@ shops (
 reviews (
   review_id      INT AUTO_INCREMENT PRIMARY KEY,
   shop_id        VARCHAR(32)  NOT NULL,
-  source         ENUM('google','trustpilot','jtl') NOT NULL,
+  source         ENUM('google','trusted_shops','jtl') NOT NULL,
   external_id    VARCHAR(128) NOT NULL,                    -- Quelle-eigene ID
   stars          TINYINT      NOT NULL,                    -- 1-5
   author         VARCHAR(255) NULL,                        -- Vorname/Initialen
@@ -195,7 +195,7 @@ review_replies (
 )
 ```
 
-`created_at` und `external_posted_at` sind getrennt: Wir können eine Antwort speichern, bevor sie an Google/Trustpilot gepostet wird. `external_status` zeigt den Push-Status.
+`created_at` und `external_posted_at` sind getrennt: Wir können eine Antwort speichern, bevor sie an Google/Trusted Shops gepostet wird. `external_status` zeigt den Push-Status.
 
 ### Tabelle `sync_runs` — Cron-Lauf-Protokoll
 
@@ -203,7 +203,7 @@ review_replies (
 sync_runs (
   run_id          INT AUTO_INCREMENT PRIMARY KEY,
   shop_id         VARCHAR(32)  NOT NULL,
-  source          ENUM('google','trustpilot','jtl') NOT NULL,
+  source          ENUM('google','trusted_shops','jtl') NOT NULL,
   started_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   finished_at     TIMESTAMP    NULL,
   status          ENUM('running','ok','error') NOT NULL DEFAULT 'running',
@@ -296,7 +296,9 @@ GOOGLE_OAUTH_REFRESH_TOKEN_PILZLING=...
 GOOGLE_OAUTH_REFRESH_TOKEN_PILZWALD=...
 GOOGLE_OAUTH_REFRESH_TOKEN_SHROOMBOOM=...
 
-TRUSTPILOT_API_KEY=...                           # ggf. shared, falls eine Trustpilot-Org
+TRUSTED_SHOPS_API_KEY_PILZLING=...
+TRUSTED_SHOPS_API_KEY_PILZWALD=...
+TRUSTED_SHOPS_API_KEY_SHROOMBOOM=...
 ```
 
 Ein Backend-Helper `getCredentialsForShop($shopId, $service)` löst das auf. Niemals einen Shop hardcodieren.
@@ -324,7 +326,7 @@ Hinter dem Verzeichnisschutz folgt eine PHP-Login-Seite mit Single-Admin-Credent
 
 ### Datenschutz / DSGVO
 
-- **Keine Bewerter-IP/Geo** in DB oder Response. Quell-APIs (Google, Trustpilot) liefern das eh nicht.
+- **Keine Bewerter-IP/Geo** in DB oder Response. Quell-APIs (Google, Trusted Shops) liefern das eh nicht.
 - **Aufrufer-IP** nur kurzfristig im `rate_limits`-Bucket (max. 1h Retention), nicht persistiert. Rechtsgrundlage: Art. 6(1)(f) DSGVO (berechtigtes Interesse, Missbrauchsschutz). Wird einzeilig in Datenschutzerklärung der Shops erwähnt.
 - **Hard-Delete** bei aus Quellen gelöschten Reviews — keine "Geister-Daten".
 - **Widget setzt keine Cookies** und nutzt **kein LocalStorage** — fällt damit nicht unter Cookie-Banner-Pflicht im Shop.
@@ -359,7 +361,9 @@ Wird laufend gepflegt. Jeder neue Endpoint muss hier eingetragen werden (siehe S
 | `/` (`index.php`) | GET | keiner | Stub-Seite, Inline-CSS mit Sync-Pflicht-Kommentar |
 | `/widget.js` | GET | keiner (statisches Asset) | Widget-Loader, embedbar im JTL-Shop |
 | `/api/reviews?shop=<id>` | GET | `enforcePublicApiHardening()` (alle 6 Layer) | Reviews-Liste für Widget, gefiltert nach `widget_configs` |
-| `/feedback?shop=<slug>` | GET | keiner | Bewertungs-Landing-Page (vom QR-Code + Widget-CTA), zeigt Plattform-Wahl-Buttons (Google / Trustpilot / Shop) |
+| `/api/shop-config?shop=<id>` | GET | `enforcePublicApiHardening()` | CI-Farben, Layout, Filter, Theme-Overrides, Feedback-URL — Single-Object-Response |
+| `/api/aggregates?shop=<id>` | GET | `enforcePublicApiHardening()` | Pro-Source-Aggregate (Google/Trusted Shops avg+count) + Total — Single-Object-Response |
+| `/feedback?shop=<slug>` | GET | keiner | Bewertungs-Landing-Page (vom QR-Code + Widget-CTA), zeigt Plattform-Wahl-Buttons (Google / Trusted Shops / Shop) |
 
 ### Admin Endpoints (`src/admin/`)
 
@@ -408,12 +412,13 @@ Stylesheets in `src/admin/assets/`:
 |-------|-------|---------------------|
 | `lib/db.php` | DB-Zugriff (PDO-Singleton) | `getDb()` — gibt PDO-Instanz, nutzt `config/database.php` |
 | `lib/helpers.php` | API-Response + Format + Utility-Helpers | `jsonResponse($data, $status)`, `apiSuccess($data)`, `apiError($msg, $status)`, `binaryIp(string)`, `clientIp()`, `formatDate($iso, $mitUhrzeit)`, `humanTimeDiff($datetime)` |
-| `lib/nav.php` | App-Header SSOT — Top-Nav mit Dropdowns + Shop-Switcher | `renderAppHeader($currentPage)` — pflegt is-active-State pro Page, lädt Shop-Liste für Switcher-Dropdown, JS für Click-Toggle inline |
+| `lib/nav.php` | App-Header + View-Tabs + Footer SSOT | `renderAppHeader($currentTopGroup)`, `renderViewTabs($tabsConfig, $currentTab)`, `renderAppFooter()` — Footer rendert Flash-Toasts + lädt toast.js |
 | `lib/auth.php` | Single-Admin-Login + Session | `attemptLogin($user, $pw)`, `logout()`, `requireLogin()`, `currentUser()`, `isApiRequest()` |
+| `lib/flash.php` | Cross-Request-Toast-System | `setFlashToast($msg, $type)` (vor Redirect), `renderFlashToasts()` (im Footer) — Toasts queue per Session, einmalige Anzeige |
 | `lib/rate_limit.php` | Sliding-Window-Rate-Limiter | `checkRateLimit($ipBinary, $limitPerMin, $windowMin): bool` — schreibt in `rate_limits`-Tabelle |
 | `lib/public_api_guard.php` | Public-API-Härtung (Layer 1-4) | `enforcePublicApiHardening($shopId): array` — CORS + Referer + Rate-Limit + Cache-Header, gibt `{shop_id, shop_row}` zurück |
 | `lib/api_clients/google.php` | Google Business Profile API-Client | (kommt nach API-Freigabe) |
-| `lib/api_clients/trustpilot.php` | Trustpilot API-Client | (kommt nach API-Freigabe) |
+| `lib/api_clients/trusted_shops.php` | Trusted Shops API-Client | (kommt nach API-Freigabe) |
 
 **Stand:** Phase 1 Backend-Foundation. Helper werden in den Phasen 1-3 implementiert. API-Clients folgen sobald externe APIs freigeschaltet sind.
 
@@ -423,7 +428,7 @@ Stylesheets in `src/admin/assets/`:
 |-------|----------|-------|
 | `_tools/cron-cleanup-rate-limits.php` | alle 15 Min | Buckets älter als 1h aus `rate_limits` löschen |
 | `_tools/cron-fetch-google.php` | alle 6h | (kommt nach API-Freigabe) |
-| `_tools/cron-fetch-trustpilot.php` | alle 6h | (kommt nach API-Freigabe) |
+| `_tools/cron-fetch-trusted-shops.php` | alle 6h | (kommt nach API-Freigabe) |
 
 **Aufruf-Pattern:** PHP-CLI via cPanel-Cronjob, niemals als HTTP-Endpoint (Tools-Folder ist nicht im DocRoot — nicht über HTTP erreichbar).
 
@@ -439,7 +444,7 @@ cPanel-Cronjobs alle 6 h, getriggert per CLI:
 
 ```
 0 */6 * * *  php /home/pilzling/app.reviews/_tools/cron-fetch-google.php
-30 */6 * * * php /home/pilzling/app.reviews/_tools/cron-fetch-trustpilot.php
+30 */6 * * * php /home/pilzling/app.reviews/_tools/cron-fetch-trusted-shops.php
 */15 * * * *  php /home/pilzling/app.reviews/_tools/cron-cleanup-rate-limits.php
 ```
 
@@ -479,7 +484,7 @@ WinSCP-Auto-Deploy von lokalem Repo `src/` nach Server `/home/pilzling/app.revie
 | Cloudflare Access (Zero Trust) | bräuchte DNS-Umzug, nicht nötig — `.htaccess` reicht |
 | JTL REST API | drohende Kostenpflicht (~100 €/Monat) — später via direkt-SQL aus JTL-MSSQL-DB als Workaround |
 | Mehrsprachiges Widget | vorerst nur Deutsch — Englisch später bei Bedarf |
-| Webhook-Empfang für Echtzeit | Trustpilot bietet Webhooks, Google nicht — Cron alle 6h reicht initial |
+| Webhook-Empfang für Echtzeit | Trusted Shops bietet Webhooks, Google nicht — Cron alle 6h reicht initial |
 | User-Management mehrere Admins | Single-Admin via `.env` reicht v1, ausgebaut bei Bedarf |
 
 ## Verweise
@@ -487,5 +492,5 @@ WinSCP-Auto-Deploy von lokalem Repo `src/` nach Server `/home/pilzling/app.revie
 - **Konzept-Diskussion:** `_plans/2026-05-02-architektur-pivot-konzept.md`
 - **Roadmap:** `_plans/ROADMAP.md`
 - **Aktiver Detailplan:** `_plans/2026-05-03-phase-0-foundation.md`
-- **Dev-Projekt-Standard (Workspace):** `C:\AI-Workspace\references\dev-projekt-standard.md`
+- **Dev-Projekt-Standard (Workspace):** `C:\AI-Workspace\references\rules-dev\dev-projekt-standard.md`
 - **production-app als Pattern-Quelle (siehe Pre-Check im Konzept-Dokument):** `C:\AI-Workspace\projects\dev\production-app\`
