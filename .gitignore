@@ -36,3 +36,6 @@ _archive/**/*.sql
 
 # Old / zu grosse References (bei Bedarf)
 references/old-data/
+
+# Profil-Junction auf den Workspace-Standard (rechner-lokal, nicht versionieren)
+.claude/rules/standard/
