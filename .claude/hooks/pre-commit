@@ -1,0 +1,24 @@
+#!/bin/sh
+# Commit-Gate (Wrapper) — GENERIERT, nicht hier editieren.
+# Quelle: C:/AI-Workspace/.claude/scripts/vorlagen/pre-commit
+#
+# Ruft die zentrale Vorlage auf, statt sie zu kopieren: eine Kopie je Repo waere ein
+# Fan-out nach Standard-Kern §2 (bei jeder Vorlagen-Aenderung 20+ Nachzieh-Commits).
+# Der Preis dieses Wegs: ein Repo, das OHNE den Workspace geklont wird, hat kein Gate.
+# Das ist bewusst und dieselbe Grenze wie bei den Standard-Junctions.
+#
+# Verdrahtung: git -C <repo> config core.hooksPath .claude/hooks
+# Notbremse:   git commit --no-verify
+
+WS="${AI_WORKSPACE_ROOT:-C:/AI-Workspace}"
+GATE="$WS/.claude/scripts/vorlagen/commit_gate.py"
+
+if [ ! -f "$GATE" ]; then
+  echo "WARN: Commit-Gate nicht gefunden ($GATE) — Commit durchgelassen." >&2
+  echo "      Liegt der Workspace woanders? Dann AI_WORKSPACE_ROOT setzen." >&2
+  exit 0
+fi
+
+COMMIT_GATE_REPO_ROOT="$(git rev-parse --show-toplevel)" \
+  python "$GATE" < /dev/null
+exit $?
