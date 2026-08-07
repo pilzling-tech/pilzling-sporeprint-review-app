@@ -1,0 +1,18 @@
+#!/bin/sh
+# Projekt-Hook: commit-msg — duenner Wrapper auf die geteilten Workspace-Gates.
+#
+# WARUM eine eigene Vorlage und nicht commit_gate.py: Git ruft commit-msg mit dem PFAD
+# ZUR NACHRICHTENDATEI als $1 auf. vorlagen/commit_gate.py nimmt so etwas nirgends
+# entgegen — es erwartet den Repo-Root oder gar kein Argument.
+#
+# WARUM .claude/hooks/ und nicht .git/hooks/: Seit 2026-08-02 steht in jedem
+# Standard-Projekt core.hooksPath = .claude/hooks. Git ignoriert .git/hooks/ dann
+# VOLLSTAENDIG — nicht nur pre-commit, das ganze Verzeichnis. Genau so ist der
+# commit-msg-Check in dev/production-app still ausgefallen, waehrend die Doku ihn
+# weiter als aktiv fuehrte.
+#
+# Bewusst umgehen: git commit --no-verify
+
+WS="${AI_WORKSPACE_ROOT:-C:/AI-Workspace}"
+
+python "$WS/.claude/scripts/verify_umlaute.py" --commit-msg "$1" || exit 1
