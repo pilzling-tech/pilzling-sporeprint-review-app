@@ -91,7 +91,8 @@ Kurzfassung. Herleitung, Beispiele und Verbotslisten: [`docs/KONVENTIONEN.md`](d
 | **System-Architektur**, Komponenten, Multi-Tenant, Tech Stack, Datenmodell, Sicherheits-Layer, Folder-Struktur, Cron-Strategie | `docs/ARCHITEKTUR.md` |
 | **UI-Standards Admin** (Buttons, Forms, Cards, Chips, Tables, Callouts, Toasts, Layout, Tokens, BEM-Konvention) | `docs/DESIGN-SYSTEM.md` |
 | Widget-Prototyp (Sample-Daten, Carousel-HTML — wird in Phase 2 mit echten Daten verbunden) | `references/widget_prototype.html` |
-| CI-Material (Farben, Logos, Original-Layout vom alten onlinereviews.tech-System) | `references/` |
+| Marken-Farben und abgeleitete UI-Varianten (verbindlich) | `C:\AI-Workspace\references\corporate-identity\README.md` |
+| Projekt-eigenes CI-Material (`references/CI/`) und Original-Layout des alten onlinereviews.tech-Systems (`references/Orginal Structure/`) — existiert so nur hier | `references/` |
 | Pattern-Quelle (production-app als Vorlage, siehe Pre-Check im Konzept) | `C:\AI-Workspace\projects\dev\production-app\` |
 | **Archivierte Historie** (nur bei Bedarf): | |
 | Original-Bauplan unter Vercel-Stack (vor Pivot 2026-05-02) | `_archive/docs/PLAN.md` |
