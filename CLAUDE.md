@@ -15,16 +15,16 @@ standard_version: 3.2
 
 ## Infrastruktur
 
-- **Hosting + API + Cron:** Vercel (Free Tier)
-- **Datenbank:** Vercel KV (Redis)
-- **Admin-Dashboard:** noch offen — `pilzling-reviews.vercel.app` oder `admin.pilzling.shop`
+- **Hosting + API + Cron:** Server Profis (cPanel, PHP) — seit dem Pivot vom 2026-05-02; die ursprünglich geplante Vercel-Variante ist historisch
+- **Datenbank:** MariaDB `pilzling_reviews_app` auf Server Profis — ersetzt das ursprünglich geplante Vercel KV
+- **Admin-Dashboard:** `admin-sporeprint.pilzling.eu` (siehe Admin-Subdomain unten)
 - **Public Subdomain (Widget + Public-API):** `sporeprint.pilzling.eu`
 - **Admin Subdomain:** `admin-sporeprint.pilzling.eu` (cPanel-Verzeichnisschutz davor)
 - **Widget-Einbindung:** `<script src="https://sporeprint.pilzling.eu/widget.js" data-shop="..." integrity="...">` in jedem JTL-Template
 - **Externe APIs:** Google Business Profile API (OAuth), Trusted Shops Reviews API, JTL REST API
 - **E-Mail-Automation:** Brevo (bestehender Account, keine eigene Mail-Schicht)
 - **Versionierung:** GitHub (privates Repo — noch nicht angelegt)
-- **Credentials:** Bitwarden → Ordner "Webserver & Domain" + Vercel Environment Variables je Shop
+- **Credentials:** Bitwarden → Ordner "Webserver & Domain" + `.env` je Umgebung (lokal gitignored, auf dem Server `app.reviews/config/.env`)
 
 ## Ordner-Struktur & Zweck
 
@@ -45,7 +45,7 @@ standard_version: 3.2
 Nach Standard-Kern §6 + Dev-Profil §3 — beide laden über `.claude/rules/` in jeder Session und
 werden hier nicht wiederholt.
 
-**Projekt-spezifisch:** Das Datenmodell für Vercel KV ist ein Pflichtfall für die
+**Projekt-spezifisch:** Das Datenmodell für MariaDB ist ein Pflichtfall für die
 3-Stufen-Methodik (neue Datenstruktur, Multi-Tenant-Mechanik) — vor Phase 1 (Backend) entsteht
 `_plans/YYYY-MM-DD-datenmodell-konzept.md`.
 
