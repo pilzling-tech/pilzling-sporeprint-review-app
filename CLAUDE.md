@@ -36,6 +36,7 @@ standard_version: 3.2
 | `_plans/` | Aktive Planung: ROADMAP + Feature-Pläne + Konzept-Dokumente |
 | `_archive/` | Erledigte/veraltete Pläne und historische Docs |
 | `_tools/` | Hilfsscripts (lokal, nicht deployed) |
+| `_db/` | DB-Schema und Migrationen (MariaDB) |
 | `references/` | Externes/Allgemeingültiges: CI-Material, Original-Struktur des alten Anbieters |
 
 **Regel:** `docs/` enthält **keine** Feature-Listen, Checkboxen oder Plan-Fragmente. Alles Planerische gehört in `_plans/`. Docs beschreiben **wie Dinge gebaut sind**, nicht **was noch zu tun ist**.
