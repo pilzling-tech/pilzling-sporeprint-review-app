@@ -165,3 +165,14 @@ Brevo-Integration ist mehr als nur "E-Mail-Versand" — es geht um die Verzahnun
 | Server-Profis-Tarif L 5.1: DDoS-Schutz + Bandbreiten-Limits | Server-Profis-Support | offen |
 | Wann Folder-Rename `sternfaenger-review-tool` → `sporeprint`? | Christian (außerhalb der Session) | offen |
 | Repo `pilzling-sporeprint-review-app` anlegen | Christian | offen |
+
+---
+
+## Archiv-Log
+
+Neue Einträge in dieser Form — Dateiname als Backtick-Span in der ersten Zelle,
+damit `verify_plans` sie findet (Kern §6, Standard v3.8):
+
+| Plan | geliefert → SSOT |
+|---|---|
+| _noch keine im neuen Format_ | – |
