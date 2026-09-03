@@ -114,4 +114,4 @@ Files außerhalb dieses Projekt-Repos, die substanziell genutzt werden.
 - `C:\AI-Workspace\CLAUDE.md` — Workspace-Kontext (Marken, Systeme)
 - `https://sporeprint.pilzling.eu` — Live-Deployment (Widget + Public-API), `admin-sporeprint.pilzling.eu` das Admin-Backend
 
-_Pflege: Claude fragt bei substanzieller Nutzung externer Files, ob sie hier ergänzt werden sollen (Memory-Regel `feedback_externe_referenzen_pflegen`)._
+_Pflege: Claude fragt bei substanzieller Nutzung externer Files, ob sie hier ergänzt werden sollen._
