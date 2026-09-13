@@ -4,8 +4,8 @@
 #
 # Ruft die zentrale Vorlage auf, statt sie zu kopieren: eine Kopie je Repo waere ein
 # Fan-out nach Grundregeln §2 (bei jeder Vorlagen-Aenderung 20+ Nachzieh-Commits).
-# Die Regel stand bis zum 13.09.2026 in Standard-Kern §2; dort ist sie seither nur noch
-# ein Zeiger auf die Grundregeln, die sie jetzt tragen (kern-schnitt/33).
+# Bis zum 13.09.2026 stand hier der Standard-Kern als Quelle; die Regel ist in die
+# Grundregeln gewandert, der dortige Abschnitt ist nur noch ein Zeiger (kern-schnitt/33).
 # Der Preis dieses Wegs: ein Repo, das OHNE den Workspace geklont wird, hat kein Gate.
 # Das ist bewusst und dieselbe Grenze wie bei den Standard-Junctions.
 #
