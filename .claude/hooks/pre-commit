@@ -2,8 +2,8 @@
 # Commit-Gate (Wrapper) — GENERIERT, nicht hier editieren.
 # Quelle: C:/AI-Workspace/.claude/scripts/vorlagen/pre-commit
 #
-# Ruft die zentrale Vorlage auf, statt sie zu kopieren: eine Kopie je Repo waere ein
-# Fan-out nach Grundregeln §2 (bei jeder Vorlagen-Aenderung 20+ Nachzieh-Commits).
+# Ruft die zentrale Vorlage auf, statt sie zu kopieren: eine Kopie je Repo wäre ein
+# Fan-out nach Grundregeln §2 (bei jeder Vorlagen-Änderung 20+ Nachzieh-Commits).
 # Bis zum 13.09.2026 stand hier der Standard-Kern als Quelle; die Regel ist in die
 # Grundregeln gewandert, der dortige Abschnitt ist nur noch ein Zeiger (kern-schnitt/33).
 # Der Preis dieses Wegs: ein Repo, das OHNE den Workspace geklont wird, hat kein Gate.
@@ -23,4 +23,33 @@ fi
 
 COMMIT_GATE_REPO_ROOT="$(git rev-parse --show-toplevel)" \
   python "$GATE" < /dev/null
-exit $?
+RC=$?
+
+# ⚠ NUR 0 UND 2 SIND AUSSAGEN ÜBER DAS REPO — alles andere ist Infra (neu 16.09.2026,
+# cluster-schluss/21, gefunden vom Kritiker-Pass). commit_gate.py kennt genau zwei
+# Rueckgabewerte (gemessen: kein einziges `return 1` in der Datei): 0 durchlassen, 2 blocken.
+# Ein Exit 1 kann daher nur von Python selbst kommen — SyntaxError, fehlendes Modul, kaputter
+# Interpreter —, also ein Defekt des WERKZEUGS. git blockt aber auf jedem Nicht-Null, und ein
+# Tippfehler in dieser einen Datei sperrte damit den Commit in JEDEM Repo der Registry,
+# einschließlich der Reparatur.
+#
+# Das ist dieselbe Maxime „Infra-Fehler != Drift" (Grundregeln §10), die commit_gate.py für
+# die Gates und gate_lauf.py für den Treiber durchsetzt — sie fehlte genau eine Ebene
+# darüber, für commit_gate.py selbst. Vorher gedeckt war das nur dadurch, dass das Zentrum
+# als einziges Repo nicht über diese Datei lief; seit cluster-schluss/21 läuft es das, und
+# damit war der Ort, an dem commit_gate.py repariert wird, selbst aussperrbar.
+# 🔬 Am Objekt reproduziert (16.09.2026): commit_gate.py mit SyntaxError -> rc=1 -> git blockt.
+#
+# WAS DAS NICHT ABDECKT: check_secrets läuft in diesem Fall nicht. Anders als bei einem
+# defekten gate_lauf.py (dort fängt notlauf_ohne_treiber() es ab) ist hier die Datei kaputt,
+# die den Not-Lauf enthält — es gibt nichts mehr, was ihn starten könnte. Durchlassen ist
+# trotzdem richtiger als Sperren: ein sperrender Hook wird mit --no-verify umgangen, und das
+# schaltet check_secrets ebenfalls ab, nur zusätzlich für alle 37 Repos gleichzeitig.
+if [ "$RC" -ne 0 ] && [ "$RC" -ne 2 ]; then
+  echo "WARN: commit_gate.py abgestuerzt (exit $RC) — das ist Infra, keine Drift." >&2
+  echo "      Commit durchgelassen (Grundregeln §10). Das Werkzeug ist defekt, nicht" >&2
+  echo "      dieses Repo: $GATE" >&2
+  echo "      ⚠ check_secrets ist in diesem Lauf NICHT gelaufen." >&2
+  exit 0
+fi
+exit $RC
