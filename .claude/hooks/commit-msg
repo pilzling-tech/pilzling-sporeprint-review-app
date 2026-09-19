@@ -8,7 +8,7 @@
 # WARUM .claude/hooks/ und nicht .git/hooks/: Seit 2026-08-02 steht in jedem
 # Standard-Projekt core.hooksPath = .claude/hooks. Git ignoriert .git/hooks/ dann
 # VOLLSTÄNDIG — nicht nur pre-commit, das ganze Verzeichnis. Genau so ist der
-# commit-msg-Check in dev/production-app still ausgefallen, waehrend die Doku ihn
+# commit-msg-Check in dev/production-app still ausgefallen, während die Doku ihn
 # weiter als aktiv führte.
 #
 # Bewusst umgehen: git commit --no-verify
