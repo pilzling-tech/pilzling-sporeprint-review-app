@@ -74,7 +74,7 @@ Kurzfassung. Herleitung, Beispiele und Verbotslisten: [`docs/KONVENTIONEN.md`](d
 - **Pattern-Übernahme aus `production-app`:** niemals 1:1 kopieren — deutsche Identifier aktiv umbenennen (`erstellt_von` → `created_by` usw.). Sporeprint nutzt durchgängig englisches Naming.
 - **Endpoint-Trennung:** jeder Endpoint ruft als erste Zeile **genau eine** Schutzfunktion — `requireLogin()` oder `enforcePublicApiHardening($shopId)`. Nie beide, nie keine; Unklarheit ist ein Architektur-Bug.
 - **Format-Standards:** Datum und Zeit ausschließlich über `formatDate`/`humanTimeDiff` (PHP) bzw. `AppFormat.*` (JS). Nie `date()`, nie `toLocaleDateString()` direkt. Anzeige TT.MM.JJJJ, leer = Em-Dash.
-- **Umlaut-Pflicht** (Pre-Commit-Hook `_tools/check_umlauts.py`): technische Identifier ASCII, alles Menschenlesbare mit Umlauten — inklusive Code-Kommentaren und Commit-Messages. Nie `fuer`, `moeglich`, `ueber`.
+- **Umlaut-Pflicht** (zentrales Gate `verify_umlaute.py`, verdrahtet über `core.hooksPath = .claude/hooks`): technische Identifier ASCII, alles Menschenlesbare mit Umlauten — inklusive Code-Kommentaren und Commit-Messages. Nie `fuer`, `moeglich`, `ueber`.
 - **Genderneutral** im Zweifel `:innen`-Form. Anrede: Admin-UI Du, Widget Sie oder neutral.
 - **Tone:** sachlich, freundlich, kompakt. Keine Buzzwords, keine Emojis im Admin-UI, Fehlermeldungen lösungsorientiert.
 

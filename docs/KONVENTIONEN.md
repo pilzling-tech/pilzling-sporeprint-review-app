@@ -109,7 +109,9 @@ Volle Doku + Erkennungs-Greps: `docs/DESIGN-SYSTEM.md` Sektion 2b.
 
 ### Sprache + Schreibweise
 
-**Umlaut-Pflicht (hart erzwungen via Pre-Commit-Hook `_tools/check_umlauts.py`):**
+**Umlaut-Pflicht (hart erzwungen vom zentralen Gate `verify_umlaute.py`):**
+
+⚠ **Bis zum 24.09.2026 stand hier `_tools/check_umlauts.py`.** Die Kopie war seit dem 02.08.2026 tot: sobald `core.hooksPath` auf `.claude/hooks` zeigt, ignoriert git das Verzeichnis `.git/hooks/` vollständig — und dort lag ihr einziger Aufruf. Entfernt mit `workspace-governance/umlaut-apparat/31`, nachdem am Objekt belegt war, dass das zentrale Gate hier greift. ⚠ `docs/DESIGN-SYSTEM.md` nennt die Kopie weiterhin; die Datei lag beim Aufräumen in einem uncommitteten Arbeitsstand und wurde deshalb bewusst nicht angefasst.
 
 Eindeutiger Test für Grenzfälle: **Wenn der Text theoretisch von einem Menschen gelesen werden könnte → Umlaute. Wenn der Text als String vom System interpretiert wird (Code-Identifier, URL, Datei-Name) → ASCII.**
 
